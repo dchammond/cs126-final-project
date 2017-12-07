@@ -21,6 +21,7 @@
         <activity android:name=".DetailedItem" />
         <activity android:name=".ProfilePage" />
         <activity android:name=".EditableItem" />
+        <activity android:name=".EditPicture" />
     </application>
 
 </manifest>
