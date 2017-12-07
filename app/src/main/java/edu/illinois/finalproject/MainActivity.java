@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tabLayout);
         setUpTabs();
 
-        displayItems(getItems());
+        displayItems(getAllItems());
     }
 
     private void setUpTabs() {
@@ -35,10 +35,12 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         // Make sure all Items load
                         Log.i("FINAL", "Tab 0 selected");
+                        displayItems(getAllItems());
                         break;
                     case 1:
                         // Make sure My Items load
                         Log.i("FINAL", "Tab 1 selected");
+                        displayItems(getMyItems());
                         break;
                     default:
                         Log.e("FINAL", "Tab was out of bounds!");
@@ -57,10 +59,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private List<Item> getItems() {
+    private List<Item> getAllItems() {
         return Arrays.asList(
                 new Item("First Item", "Amazing Description 1", 10, "Seller 1", "https://az616578.vo.msecnd.net/files/2016/07/23/636049076842624124-2115961982_sun.jpg", "Phone: 1234567890\nEmail:test@gmail.com"),
-                new Item("Second Item", "Amazing Description 2", 20, "Seller 2", "https://img.purch.com/h/1000/aHR0cDovL3d3dy5zcGFjZS5jb20vaW1hZ2VzL2kvMDAwLzAxOS8wOTEvb3JpZ2luYWwvanVseS1za3l3YXRjaGluZy1wb3J0bGFuZC5qcGc=", "Phone: 1234567890\nEmail:test@gmail.com")
+                new Item("My Item", "Amazing Description 2", 20, "Seller 2", "https://img.purch.com/h/1000/aHR0cDovL3d3dy5zcGFjZS5jb20vaW1hZ2VzL2kvMDAwLzAxOS8wOTEvb3JpZ2luYWwvanVseS1za3l3YXRjaGluZy1wb3J0bGFuZC5qcGc=", "Phone: 1234567890\nEmail:test@gmail.com")
+        );
+    }
+
+    private List<Item> getMyItems() {
+        return Arrays.asList(
+                new Item("My Item", "Amazing Description 2", 20, "Seller 2", "https://img.purch.com/h/1000/aHR0cDovL3d3dy5zcGFjZS5jb20vaW1hZ2VzL2kvMDAwLzAxOS8wOTEvb3JpZ2luYWwvanVseS1za3l3YXRjaGluZy1wb3J0bGFuZC5qcGc=", "Phone: 1234567890\nEmail:test@gmail.com")
         );
     }
 
