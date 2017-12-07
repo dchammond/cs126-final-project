@@ -1,5 +1,6 @@
 package edu.illinois.finalproject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -47,7 +48,12 @@ public class EditableItem extends AppCompatActivity {
         this.editImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Allow changing image
+                final Context context = view.getContext();
+                Intent detailedIntent = new Intent(context, EditPicture.class);
+
+                detailedIntent.putExtra(EditPicture.getEditableImageKey(), EditableItem.this.currentItem);
+
+                context.startActivity(detailedIntent);
             }
         });
     }
