@@ -17,6 +17,7 @@ public class DetailedItem extends AppCompatActivity {
 
     private ImageView itemImage;
 
+    private TextView itemName;
     private TextView itemDescription;
     private TextView itemPrice;
     private TextView itemSeller;
@@ -33,6 +34,7 @@ public class DetailedItem extends AppCompatActivity {
 
         Picasso.with(this).load(currentItem.getImageUrl()).into(this.itemImage);
 
+        this.itemName.setText(currentItem.getName());
         this.itemDescription.setText(currentItem.getDescription());
         this.itemPrice.setText("$" + currentItem.getPrice().toString());
         this.itemSeller.setText(currentItem.getSeller());
@@ -40,6 +42,7 @@ public class DetailedItem extends AppCompatActivity {
     }
 
     private void setUpElements() {
+        this.itemName = findViewById(R.id.itemName);
         this.itemImage = findViewById(R.id.itemImage);
         this.itemDescription = findViewById(R.id.itemDescription);
         this.itemPrice = findViewById(R.id.itemPrice);
