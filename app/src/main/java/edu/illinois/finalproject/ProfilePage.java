@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.Arrays;
@@ -19,9 +20,9 @@ public class ProfilePage extends AppCompatActivity {
 
     private Button signoutButton;
 
-    private TextView myName;
+    private EditText editMyName;
     private TextView myEmail;
-    private TextView myDefaultContactInfo;
+    private EditText editMyDefaultContactInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +32,9 @@ public class ProfilePage extends AppCompatActivity {
         this.signoutButton = findViewById(R.id.signoutButton);
         setUpButtons();
 
-        this.myName = findViewById(R.id.myName);
+        this.editMyName = findViewById(R.id.editMyName);
         this.myEmail = findViewById(R.id.myEmail);
-        this.myDefaultContactInfo = findViewById(R.id.myDefaultContactInfo);
+        this.editMyDefaultContactInfo = findViewById(R.id.editMyDefaultContactInfo);
         setUpElements();
 
         displayItems(getMyItems());
@@ -51,9 +52,9 @@ public class ProfilePage extends AppCompatActivity {
     private void setUpElements() {
         getFirebaseUser();
         retrieveUserObject();
-        this.myName.setText("Dillon");
+        this.editMyName.setText("Dillon");
         this.myEmail.setText("dillonh2@illinois.edu");
-        this.myDefaultContactInfo.setText("Email: dillonh2@illinois.edu\nPhone: 1234567890");
+        this.editMyDefaultContactInfo.setText("Email: dillonh2@illinois.edu\nPhone: 1234567890");
     }
 
     private void getFirebaseUser() {
