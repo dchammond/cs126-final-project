@@ -35,6 +35,8 @@ public class ProfilePage extends AppCompatActivity {
         this.myEmail = findViewById(R.id.myEmail);
         this.myDefaultContactInfo = findViewById(R.id.myDefaultContactInfo);
         setUpElements();
+
+        displayItems(getMyItems());
     }
 
     private void setUpButtons() {
@@ -69,8 +71,8 @@ public class ProfilePage extends AppCompatActivity {
     }
 
     private void displayItems(List<Item> itemsToDisplay) {
-        final ItemsAdapter itemsAdapter = new ItemsAdapter(itemsToDisplay);
-        final RecyclerView itemList = findViewById(R.id.itemsRecyclerView);
+        final ItemsAdapter itemsAdapter = new ItemsAdapter(itemsToDisplay, R.layout.profile_page);
+        final RecyclerView itemList = findViewById(R.id.myItemsRecyclerView);
         itemList.setAdapter(itemsAdapter);
         itemList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }

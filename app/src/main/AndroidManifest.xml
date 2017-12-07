@@ -20,6 +20,7 @@
         </activity>
         <activity android:name=".DetailedItem" />
         <activity android:name=".ProfilePage" />
+        <activity android:name=".EditableItem" />
     </application>
 
 </manifest>

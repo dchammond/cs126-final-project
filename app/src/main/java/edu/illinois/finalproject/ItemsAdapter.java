@@ -21,18 +21,22 @@ import java.util.List;
 
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
     private List<Item> allItemsToDisplay = new ArrayList<>();
+    private int layoutId;
 
     /**
      * Create a new ItemsAdapter to get displayed on screen
      * @param allItemsToDisplay The Items to display
+     * @param layoutId The Layout ID of the calling activity, used to determine editing of items
      */
-    public ItemsAdapter(List<Item> allItemsToDisplay) {
+    public ItemsAdapter(List<Item> allItemsToDisplay, int layoutId) {
         this.allItemsToDisplay = allItemsToDisplay;
+        this.layoutId = layoutId;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return R.layout.item_with_image;
+        return this.layoutId == R.layout.profile_page ?
+                R.layout.editable_item_with_image : R.layout.item_with_image;
     }
 
     @Override
@@ -55,11 +59,20 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 final Context context = v.getContext();
-                Intent detailedIntent = new Intent(context, DetailedItem.class);
 
-                detailedIntent.putExtra(DetailedItem.getItemKey(), itemToDisplay);
+                if (ItemsAdapter.this.layoutId == R.layout.profile_page) {
+                    Intent detailedIntent = new Intent(context, EditableItem.class);
 
-                context.startActivity(detailedIntent);
+                    detailedIntent.putExtra(EditableItem.getEditableItemKey(), itemToDisplay);
+
+                    context.startActivity(detailedIntent);
+                } else {
+                    Intent detailedIntent = new Intent(context, DetailedItem.class);
+
+                    detailedIntent.putExtra(DetailedItem.getItemKey(), itemToDisplay);
+
+                    context.startActivity(detailedIntent);
+                }
             }
         });
     }

@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayItems(List<Item> itemsToDisplay) {
-        final ItemsAdapter itemsAdapter = new ItemsAdapter(itemsToDisplay);
+        final ItemsAdapter itemsAdapter = new ItemsAdapter(itemsToDisplay, R.layout.activity_main);
         final RecyclerView itemList = findViewById(R.id.itemsRecyclerView);
         itemList.setAdapter(itemsAdapter);
         itemList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
