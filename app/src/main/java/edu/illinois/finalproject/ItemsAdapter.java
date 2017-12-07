@@ -50,9 +50,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         holder.itemPrice.setText("$" + itemToDisplay.getPrice().toString());
         holder.itemSeller.setText(itemToDisplay.getSeller());
         final Context context = holder.itemView.getContext();
-        Picasso p = Picasso.with(context);
-        p.setLoggingEnabled(true);
-        p.load(itemToDisplay.getImageUrl()).into(holder.itemImage);
+        Picasso.with(context).load(itemToDisplay.getImageUrl()).into(holder.itemImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
