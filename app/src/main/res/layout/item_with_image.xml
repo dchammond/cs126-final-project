@@ -12,7 +12,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="ItemName"
-        android:textSize="24sp"
+        android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/itemImage"
@@ -20,8 +20,8 @@
 
     <ImageView
         android:id="@+id/itemImage"
-        android:layout_width="89dp"
-        android:layout_height="94dp"
+        android:layout_width="196dp"
+        android:layout_height="196dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:contentDescription="Restaurant Image"
@@ -40,6 +40,7 @@
         android:layout_marginTop="8dp"
         android:text="$00"
         android:textAlignment="viewEnd"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/itemImage"
         app:layout_constraintTop_toBottomOf="@+id/itemName" />
@@ -53,6 +54,7 @@
         android:layout_marginTop="8dp"
         android:text="Seller"
         android:textAlignment="viewEnd"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/itemImage"
         app:layout_constraintTop_toBottomOf="@+id/itemPrice" />

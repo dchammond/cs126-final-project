@@ -9,12 +9,12 @@
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="69dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tabMaxWidth="0dp"
         app:tabGravity="fill"
+        app:tabMaxWidth="0dp"
         app:tabMode="fixed">
 
         <android.support.design.widget.TabItem
