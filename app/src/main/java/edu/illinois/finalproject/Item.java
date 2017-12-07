@@ -13,14 +13,15 @@ public class Item implements Parcelable {
     private final Integer price;
     private final String seller;
     private final String imageUrl;
+    private final String contactInfo;
 
-
-    public Item(String name, String description, Integer price, String seller, String imageUrl) {
+    public Item(String name, String description, Integer price, String seller, String imageUrl, String contactInfo) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.seller = seller;
         this.imageUrl = imageUrl;
+        this.contactInfo = contactInfo;
     }
 
     public String getName() {
@@ -43,6 +44,10 @@ public class Item implements Parcelable {
         return imageUrl;
     }
 
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -55,6 +60,7 @@ public class Item implements Parcelable {
         dest.writeInt(this.price);
         dest.writeString(this.seller);
         dest.writeString(this.imageUrl);
+        dest.writeSerializable(this.contactInfo);
     }
 
     protected Item(Parcel in) {
@@ -63,6 +69,7 @@ public class Item implements Parcelable {
         this.price = in.readInt();
         this.seller = in.readString();
         this.imageUrl = in.readString();
+        this.contactInfo = in.readString();
     }
 
     public static final Parcelable.Creator<Item> CREATOR
