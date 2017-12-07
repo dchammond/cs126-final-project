@@ -1,5 +1,7 @@
 package edu.illinois.finalproject;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,13 +19,18 @@ public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
 
+    private Button myProfileButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tabLayout = findViewById(R.id.tabLayout);
+        this.tabLayout = findViewById(R.id.tabLayout);
         setUpTabs();
+
+        this.myProfileButton = findViewById(R.id.myProfileButton);
+        setUpButtons();
 
         displayItems(getAllItems());
     }
@@ -55,6 +63,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
+            }
+        });
+    }
+
+    private void setUpButtons() {
+        this.myProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Context context = view.getContext();
+                Intent profileIntent = new Intent(context, ProfilePage.class);
+                context.startActivity(profileIntent);
             }
         });
     }
