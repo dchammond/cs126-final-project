@@ -60,7 +60,7 @@ public class Item implements Parcelable {
         dest.writeInt(this.price);
         dest.writeString(this.seller);
         dest.writeString(this.imageUrl);
-        dest.writeSerializable(this.contactInfo);
+        dest.writeString(this.contactInfo);
     }
 
     protected Item(Parcel in) {
