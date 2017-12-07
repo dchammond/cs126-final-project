@@ -150,4 +150,19 @@
         app:layout_constraintTop_toBottomOf="@+id/editItemName"
         app:srcCompat="@mipmap/ic_launcher" />
 
+    <Button
+        android:id="@+id/deleteItemButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Delete This Item"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editItemContactInfo" />
+
 </android.support.constraint.ConstraintLayout>
