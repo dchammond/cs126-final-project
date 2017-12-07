@@ -35,12 +35,14 @@
         android:id="@+id/itemPrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="$00"
         android:textAlignment="viewEnd"
         android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/itemSeller"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/itemImage"
         app:layout_constraintTop_toBottomOf="@+id/itemName" />
@@ -49,14 +51,14 @@
         android:id="@+id/itemSeller"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="Seller"
         android:textAlignment="viewEnd"
         android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/itemImage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/itemImage"
-        app:layout_constraintTop_toBottomOf="@+id/itemPrice" />
+        app:layout_constraintStart_toEndOf="@+id/itemImage" />
 
 </android.support.constraint.ConstraintLayout>
