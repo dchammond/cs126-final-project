@@ -3,6 +3,7 @@ package edu.illinois.finalproject;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         holder.itemPrice.setText("$" + itemToDisplay.getPrice().toString());
         holder.itemSeller.setText(itemToDisplay.getSeller());
         final Context context = holder.itemView.getContext();
-        Picasso.with(context).load(itemToDisplay.getImageUrl()).into(holder.itemImage);
+        Picasso p = Picasso.with(context);
+        p.setLoggingEnabled(true);
+        p.load(itemToDisplay.getImageUrl()).into(holder.itemImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
