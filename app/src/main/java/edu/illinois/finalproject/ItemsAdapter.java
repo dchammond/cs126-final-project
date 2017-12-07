@@ -35,8 +35,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        return this.layoutId == R.layout.profile_page ?
-                R.layout.editable_item_with_image : R.layout.item_with_image;
+        return R.layout.item_with_image;
     }
 
     @Override
