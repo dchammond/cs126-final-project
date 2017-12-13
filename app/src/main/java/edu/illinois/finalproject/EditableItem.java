@@ -37,7 +37,7 @@ public class EditableItem extends AppCompatActivity {
         this.currentItem = extractItem();
 
         this.editImageButton = findViewById(R.id.editImageButton);
-        Picasso.with(this).load(currentItem.getImageUrl()).into(this.editImageButton);
+        Picasso.with(this).load(currentItem.getImageUri()).into(this.editImageButton);
         this.deleteItemButton = findViewById(R.id.deleteItemButton);
         setUpButtons();
 
@@ -69,10 +69,10 @@ public class EditableItem extends AppCompatActivity {
     }
 
     private void setUpElements() {
-        this.editItemName.setText(this.currentItem.getName());
-        this.editItemDescription.setText(this.currentItem.getDescription());
-        this.editItemPrice.setText("$" + this.currentItem.getPrice().toString());
-        this.editItemContactInfo.setText(this.currentItem.getContactInfo());
+        this.editItemName.setText(this.currentItem.getItemName());
+        this.editItemDescription.setText(this.currentItem.getItemDescription());
+        this.editItemPrice.setText("$" + this.currentItem.getItemPrice().toString());
+        this.editItemContactInfo.setText(this.currentItem.getContactInfo().getFormattedContactInfo());
     }
 
     public static String getEditableItemKey() {

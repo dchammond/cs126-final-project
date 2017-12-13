@@ -49,11 +49,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Item itemToDisplay = this.allItemsToDisplay.get(position);
-        holder.itemName.setText(itemToDisplay.getName());
-        holder.itemPrice.setText("$" + itemToDisplay.getPrice().toString());
-        holder.itemSeller.setText(itemToDisplay.getSeller());
+        holder.itemName.setText(itemToDisplay.getItemName());
+        holder.itemPrice.setText("$" + itemToDisplay.getItemPrice().toString());
+        holder.itemSeller.setText(itemToDisplay.getSellerPointer().getRealUser().getDisplayName());
         final Context context = holder.itemView.getContext();
-        Picasso.with(context).load(itemToDisplay.getImageUrl()).into(holder.itemImage);
+        Picasso.with(context).load(itemToDisplay.getImageUri()).into(holder.itemImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

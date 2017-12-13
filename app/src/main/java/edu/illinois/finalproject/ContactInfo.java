@@ -36,6 +36,21 @@ public class ContactInfo implements Parcelable {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getFormattedContactInfo() {
+        StringBuilder formatted = new StringBuilder("");
+        if (checkStringExists(this.email)) {
+            formatted.append(this.email);
+        }
+        if (checkStringExists(this.phoneNumber)) {
+            formatted.append("\n").append(this.phoneNumber);
+        }
+        return formatted.toString();
+    }
+
+    private boolean checkStringExists(String string) {
+        return string != null && string.length() > 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

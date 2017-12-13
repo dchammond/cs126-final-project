@@ -31,7 +31,7 @@ public class EditPicture extends AppCompatActivity {
         this.currentItem = extractItem();
 
         this.itemImage = findViewById(R.id.itemImage);
-        Picasso.with(this).load(this.currentItem.getImageUrl()).into(this.itemImage);
+        Picasso.with(this).load(this.currentItem.getImageUri()).into(this.itemImage);
 
         this.launchGalleryButton = findViewById(R.id.launchGalleryButton);
         this.launchCameraButton = findViewById(R.id.launchCameraButton);

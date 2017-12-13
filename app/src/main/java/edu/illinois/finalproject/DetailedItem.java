@@ -32,13 +32,13 @@ public class DetailedItem extends AppCompatActivity {
 
         final Item currentItem = extractItem();
 
-        Picasso.with(this).load(currentItem.getImageUrl()).into(this.itemImage);
+        Picasso.with(this).load(currentItem.getImageUri()).into(this.itemImage);
 
-        this.itemName.setText(currentItem.getName());
-        this.itemDescription.setText(currentItem.getDescription());
-        this.itemPrice.setText("$" + currentItem.getPrice().toString());
-        this.itemSeller.setText(currentItem.getSeller());
-        this.itemContactInfo.setText(currentItem.getContactInfo());
+        this.itemName.setText(currentItem.getItemName());
+        this.itemDescription.setText(currentItem.getItemDescription());
+        this.itemPrice.setText("$" + currentItem.getItemPrice().toString());
+        this.itemSeller.setText(currentItem.getSellerPointer().getRealUser().getDisplayName());
+        this.itemContactInfo.setText(currentItem.getContactInfo().getFormattedContactInfo());
     }
 
     private void setUpElements() {
