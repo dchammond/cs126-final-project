@@ -47,23 +47,28 @@ public class ProfilePage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AuthUI.getInstance()
-                        .signOut(ProfilePage.this)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(
-                                            ProfilePage.this,
-                                            "Signed Out",
-                                            Toast.LENGTH_LONG).show();
-                                    startActivity(new Intent(ProfilePage.this, MainActivity.class));
-                                } else {
-                                    Toast.makeText(
-                                            ProfilePage.this,
-                                            "Did NOT Sign Out",
-                                            Toast.LENGTH_LONG).show();
-                                }
+                    .signOut(ProfilePage.this)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(
+                                        ProfilePage.this,
+                                        "Signed Out",
+                                        Toast.LENGTH_LONG).show();
+                                startActivity(
+                                        new Intent(
+                                                ProfilePage.this,
+                                                MainActivity.class
+                                        )
+                                );
+                            } else {
+                                Toast.makeText(
+                                        ProfilePage.this,
+                                        "Did NOT Sign Out",
+                                        Toast.LENGTH_LONG).show();
                             }
-                        });
+                        }
+                    });
             }
         });
     }
