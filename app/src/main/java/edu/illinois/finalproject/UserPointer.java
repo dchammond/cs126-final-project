@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 public class UserPointer implements Parcelable {
     private String userId;
-    private User realUser = null;
+    private User realUser;
 
     public UserPointer() {
         // Default constructor required for calls to DataSnapshot.getValue()
@@ -17,10 +17,19 @@ public class UserPointer implements Parcelable {
 
     public UserPointer(String userId) {
         this.userId = userId;
+        this.realUser = null;
     }
 
     public String getUserId() {
         return userId;
+    }
+
+    public User getRealUser() {
+        if (realUser == null) {
+            // TODO: This should be a FireBase query to find the real User
+            // TODO: Then cache the User Object
+        }
+        return realUser;
     }
 
     public void setUserId(String userId) {

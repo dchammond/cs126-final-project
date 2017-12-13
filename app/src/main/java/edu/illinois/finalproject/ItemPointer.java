@@ -9,6 +9,7 @@ import android.os.Parcelable;
 
 public class ItemPointer implements Parcelable {
     private String itemId;
+    private Item realItem;
 
     public ItemPointer() {
         // Default constructor required for calls to DataSnapshot.getValue()
@@ -16,6 +17,14 @@ public class ItemPointer implements Parcelable {
 
     public ItemPointer(String itemId) {
         this.itemId = itemId;
+    }
+
+    public Item getRealItem() {
+        if (realItem == null) {
+            // TODO: This should be a FireBase query to find the real User
+            // TODO: Then cache the User Object
+        }
+        return realItem;
     }
 
     public String getItemId() {
@@ -44,10 +53,12 @@ public class ItemPointer implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.itemId);
+        dest.writeParcelable(this.realItem, flags);
     }
 
     protected ItemPointer(Parcel in) {
         this.itemId = in.readString();
+        this.realItem = in.readParcelable(Item.class.getClassLoader());
     }
 
     public static final Creator<ItemPointer> CREATOR = new Creator<ItemPointer>() {
