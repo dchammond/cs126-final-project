@@ -11,10 +11,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "final-project";
+    private static final int RESULT_AUTH = 3;
+
+    private static final List<AuthUI.IdpConfig> signupProviders = Arrays.asList(
+            new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
+    );
+    private FirebaseUser currentUser;
 
     private TabLayout tabLayout;
     private int currentTab;
@@ -26,6 +38,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (this.currentUser == null) {
+            signIn();
+        } else {
+            Log.i(TAG, "We are logged in as: " + this.currentUser);
+        }
+
         this.tabLayout = findViewById(R.id.tabLayout);
         setUpTabs();
 
@@ -33,6 +52,30 @@ public class MainActivity extends AppCompatActivity {
         setUpButtons();
 
         displayItems(getAllItems());
+    }
+
+    private void signIn() {
+        startActivityForResult(AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(signupProviders)
+                        .build(),
+                RESULT_AUTH);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch(requestCode) {
+                case RESULT_AUTH:
+                    this.currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    break;
+                default:
+                    Log.e(MainActivity.TAG,"Got requestCode:" + requestCode);
+                    break;
+            }
+        } else {
+            Log.e(TAG, "resultCode was NOT RESULT_OKAY, it was: " + resultCode);
+        }
     }
 
     private void setUpTabs() {
@@ -82,12 +125,12 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Item> getAllItems() {
         // TODO: FireBase Query
-        return null;
+        return Arrays.asList();
     }
 
     private List<Item> getMyItems() {
         // TODO: FireBase Query
-        return null;
+        return Arrays.asList();
     }
 
     private void displayItems(List<Item> itemsToDisplay) {
