@@ -21,16 +21,16 @@ import java.util.List;
 
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
     private List<Item> allItemsToDisplay = new ArrayList<>();
-    private int layoutId;
+    private int tabPosition;
 
     /**
      * Create a new ItemsAdapter to get displayed on screen
      * @param allItemsToDisplay The Items to display
-     * @param layoutId The Layout ID of the calling activity, used to determine editing of items
+     * @param tabPosition The current Tab selected (All items = 0, My Items = 1;
      */
-    public ItemsAdapter(List<Item> allItemsToDisplay, int layoutId) {
+    public ItemsAdapter(List<Item> allItemsToDisplay, int tabPosition) {
         this.allItemsToDisplay = allItemsToDisplay;
-        this.layoutId = layoutId;
+        this.tabPosition = tabPosition;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
             public void onClick(View v) {
                 final Context context = v.getContext();
 
-                if (ItemsAdapter.this.layoutId == R.layout.profile_page) {
+                if (ItemsAdapter.this.tabPosition == 1) {
                     Intent detailedIntent = new Intent(context, EditableItem.class);
 
                     detailedIntent.putExtra(EditableItem.getEditableItemKey(), itemToDisplay);

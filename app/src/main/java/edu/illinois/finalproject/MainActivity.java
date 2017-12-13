@@ -17,6 +17,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
+    private int currentTab;
 
     private Button myProfileButton;
 
@@ -42,11 +43,13 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         // Make sure all Items load
                         Log.i("FINAL", "Tab 0 selected");
+                        MainActivity.this.currentTab = 0;
                         displayItems(getAllItems());
                         break;
                     case 1:
                         // Make sure My Items load
                         Log.i("FINAL", "Tab 1 selected");
+                        MainActivity.this.currentTab = 1;
                         displayItems(getMyItems());
                         break;
                     default:
@@ -91,9 +94,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayItems(List<Item> itemsToDisplay) {
-        final ItemsAdapter itemsAdapter = new ItemsAdapter(itemsToDisplay, R.layout.activity_main);
+        final ItemsAdapter itemsAdapter = new ItemsAdapter(itemsToDisplay, this.currentTab);
         final RecyclerView itemList = findViewById(R.id.itemsRecyclerView);
         itemList.setAdapter(itemsAdapter);
         itemList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+    }
+
+    public int getCurrentTab() {
+        return currentTab;
     }
 }

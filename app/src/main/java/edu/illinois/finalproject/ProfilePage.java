@@ -36,8 +36,6 @@ public class ProfilePage extends AppCompatActivity {
         this.myEmail = findViewById(R.id.myEmail);
         this.editMyDefaultContactInfo = findViewById(R.id.editMyDefaultContactInfo);
         setUpElements();
-
-        displayItems(getMyItems());
     }
 
     private void setUpButtons() {
@@ -69,12 +67,5 @@ public class ProfilePage extends AppCompatActivity {
         return Arrays.asList(
                 new Item("My Item", "Amazing Description 2", 20, "Dillon", "https://img.purch.com/h/1000/aHR0cDovL3d3dy5zcGFjZS5jb20vaW1hZ2VzL2kvMDAwLzAxOS8wOTEvb3JpZ2luYWwvanVseS1za3l3YXRjaGluZy1wb3J0bGFuZC5qcGc=", "Phone: 1234567890\nEmail:test@gmail.com")
         );
-    }
-
-    private void displayItems(List<Item> itemsToDisplay) {
-        final ItemsAdapter itemsAdapter = new ItemsAdapter(itemsToDisplay, R.layout.profile_page);
-        final RecyclerView itemList = findViewById(R.id.myItemsRecyclerView);
-        itemList.setAdapter(itemsAdapter);
-        itemList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 }
