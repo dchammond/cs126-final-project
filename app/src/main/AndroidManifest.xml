@@ -20,12 +20,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailedItem" />
+        <activity android:name=".DetailedItem"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ProfilePage"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".EditableItem"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".EditPicture" />
+        <activity android:name=".EditPicture"
+            android:screenOrientation="portrait"/>
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.example.android.fileprovider"
