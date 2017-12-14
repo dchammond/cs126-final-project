@@ -68,6 +68,7 @@ public class EditableItem extends AppCompatActivity {
                 UserPointer userPointer = EditableItem.this.currentItem.getSellerPointer();
                 String itemId = EditableItem.this.currentItem.getItemId();
                 Item.removeItem(itemId, userPointer, new deleteItem());
+                startActivity(new Intent(EditableItem.this, MainActivity.class));
             }
         });
     }
