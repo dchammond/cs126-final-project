@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
             new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
     );
     private FirebaseUser firebaseUser;
+    private User currentUser;
 
     private TabLayout tabLayout;
     private int currentTab;
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private static class findUserTask extends AsyncTask<User, Void, Void> {
+    private class findUserTask extends AsyncTask<User, Void, Void> {
 
         private FirebaseUser firebaseUser;
 
@@ -106,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
             if (users.length == 0) {
                 FirebaseUser user = this.firebaseUser;
                 User newUser = new User(
-                        user.getUid(),
                         user.getDisplayName(),
                         new ArrayList<ItemPointer>());
                 User.createUser(newUser, new createUserTask());
+                MainActivity.this.currentUser = newUser;
             }
             return null;
         }
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
             for (Item item : allItems) {
                 if (item.getSellerPointer()
                         .getUserId()
-                        .equals(MainActivity.this.firebaseUser.getUid())) {
+                        .equals(MainActivity.this.currentUser.getUserId())) {
                     myItems.add(item);
                 }
             }

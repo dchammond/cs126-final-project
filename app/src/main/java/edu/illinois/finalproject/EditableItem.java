@@ -2,8 +2,10 @@ package edu.illinois.finalproject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -63,9 +65,21 @@ public class EditableItem extends AppCompatActivity {
         this.deleteItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // This code would delete the item in FireBase
+                Item.removeItem(EditableItem.this.currentItem.getItemId(), new deleteItem());
             }
         });
+    }
+
+    private static class deleteItem extends AsyncTask<Boolean, Void, Void> {
+        @Override
+        protected Void doInBackground(Boolean... booleans) {
+            boolean deleted = booleans[0];
+            if (!deleted) {
+                Log.e(MainActivity.TAG, "Failed to delete Item");
+            }
+
+            return null;
+        }
     }
 
     private void setUpElements() {

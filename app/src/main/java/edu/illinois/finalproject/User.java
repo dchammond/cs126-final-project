@@ -32,8 +32,7 @@ public class User implements Parcelable {
         // Default constructor required for calls to DataSnapshot.getValue()
     }
 
-    public User(String userId, String displayName, ArrayList<ItemPointer> itemPointers) {
-        this.userId = userId;
+    public User(String displayName, ArrayList<ItemPointer> itemPointers) {
         this.displayName = displayName;
         this.itemPointers = itemPointers;
     }
@@ -102,14 +101,21 @@ public class User implements Parcelable {
         });
     }
 
-    public static void createUser(final User newUser,
+    public static void createUser(User newUser,
                                   final AsyncTask<Boolean, Void, Void> callback) {
-        USERS.push().setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+        DatabaseReference dbRef = USERS.push();
+        newUser.setUserId(dbRef.getKey());
+        dbRef.setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 callback.execute(task.isSuccessful());
             }
         });
+    }
+
+    public static void updateUser(String userId,
+                                  final AsyncTask<Boolean, Void, Void> callback) {
+
     }
 
     @Override
