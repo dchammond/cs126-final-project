@@ -16,23 +16,35 @@ public class ItemPointer implements Parcelable {
         // Default constructor required for calls to DataSnapshot.getValue()
     }
 
+    /**
+     * Normal constructor
+     * @param itemId The FireBase generated object UUID
+     */
     public ItemPointer(String itemId) {
         this.itemId = itemId;
     }
 
+    /**
+     * Useful method to retrive an Item object from an ItemPointer
+     * @param callback The callback that will receive the Item
+     */
     public void getRealItem(AsyncTask<Item, Void, Void> callback) {
         if (this.realItem == null) {
-            Item.findItem(this.itemId, new findItemTask(this, callback));
+            Item.findItem(this.itemId, new FindItemTask(this, callback));
         } else {
             callback.execute(this.realItem);
         }
     }
 
-    private static class findItemTask extends AsyncTask<Item, Void, Void> {
+    /**
+     * A FindItemTask is an AsyncTask that wraps the callback that wants the Item
+     * THis is useful for caching hte Item associated with this ItemPointer
+     */
+    private static class FindItemTask extends AsyncTask<Item, Void, Void> {
         private ItemPointer itemPointer;
         private AsyncTask<Item, Void, Void> callback;
 
-        public findItemTask(ItemPointer itemPointer, AsyncTask<Item, Void, Void> callback) {
+        public FindItemTask(ItemPointer itemPointer, AsyncTask<Item, Void, Void> callback) {
             super();
             this.itemPointer = itemPointer;
             this.callback = callback;
@@ -56,20 +68,6 @@ public class ItemPointer implements Parcelable {
 
     public String getItemId() {
         return itemId;
-    }
-
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ItemPointer that = (ItemPointer) o;
-
-        return itemId != null ? itemId.equals(that.itemId) : that.itemId == null;
     }
 
     @Override
