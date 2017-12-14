@@ -22,6 +22,7 @@ import java.util.List;
 
 public class ProfilePage extends AppCompatActivity {
 
+    private Button addNewItemButton;
     private Button signoutButton;
 
     private EditText editMyName;
@@ -33,6 +34,7 @@ public class ProfilePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_page);
 
+        this.addNewItemButton = findViewById(R.id.addNewItemButton);
         this.signoutButton = findViewById(R.id.signoutButton);
         setUpButtons();
 
@@ -43,6 +45,12 @@ public class ProfilePage extends AppCompatActivity {
     }
 
     private void setUpButtons() {
+        this.addNewItemButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: Whole activity for creating new items.
+            }
+        });
         this.signoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

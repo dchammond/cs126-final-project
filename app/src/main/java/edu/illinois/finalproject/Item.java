@@ -14,6 +14,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 /**
  * Created by dillon on 12/6/17.
  */
@@ -115,6 +117,24 @@ public class Item implements Parcelable {
 
     public void setImageUri(String imageUri) {
         this.imageUri = imageUri;
+    }
+
+    public static void getAllItems(final AsyncTask<Item, Void, Void> callback) {
+        ITEMS.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<Item> allItems = new ArrayList<>();
+                for (DataSnapshot item : dataSnapshot.getChildren()) {
+                    allItems.add(item.getValue(Item.class));
+                }
+                callback.execute(allItems.toArray(new Item[allItems.size()]));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.cancel(false);
+            }
+        });
     }
 
     public static void findItem(final String userId, final AsyncTask<Item, Void, Void> callback) {
