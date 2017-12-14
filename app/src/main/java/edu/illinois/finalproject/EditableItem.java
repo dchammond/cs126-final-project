@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -111,10 +110,10 @@ public class EditableItem extends AppCompatActivity {
                         EditableItem.this.imageUri
                 );
                 if (EditableItem.this.currentItem == null) {
-                    Item.createItem(newItem, EditableItem.this.currentUser, new writeItem());
+                    Item.createItem(newItem, EditableItem.this.currentUser, new WriteItem());
                 } else {
                     newItem.setItemId(EditableItem.this.currentItem.getItemId());
-                    Item.updateItem(newItem, new writeItem());
+                    Item.updateItem(newItem, new WriteItem());
                 }
                 finish();
             }
@@ -136,14 +135,17 @@ public class EditableItem extends AppCompatActivity {
                 public void onClick(View view) {
                     UserPointer userPointer = EditableItem.this.currentItem.getSellerPointer();
                     String itemId = EditableItem.this.currentItem.getItemId();
-                    Item.removeItem(itemId, userPointer, new deleteItem());
+                    Item.removeItem(itemId, userPointer, new DeleteItem());
                     startActivity(new Intent(EditableItem.this, MainActivity.class));
                 }
             });
         }
     }
 
-    private static class writeItem extends AsyncTask<Boolean, Void, Void> {
+    /**
+     * A WriteItem is an AsyncTask used to handle the result of creating or updating an Item
+     */
+    private static class WriteItem extends AsyncTask<Boolean, Void, Void> {
         @Override
         protected Void doInBackground(Boolean... booleans) {
             boolean deleted = booleans[0];
@@ -160,7 +162,10 @@ public class EditableItem extends AppCompatActivity {
         }
     }
 
-    private static class deleteItem extends AsyncTask<Boolean, Void, Void> {
+    /**
+     * A DeleteItem is an AsyncTask used to handle the result of deleting an Item
+     */
+    private static class DeleteItem extends AsyncTask<Boolean, Void, Void> {
         @Override
         protected Void doInBackground(Boolean... booleans) {
             boolean deleted = booleans[0];
