@@ -47,8 +47,9 @@ public class EditableItem extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             switch(requestCode) {
                 case RESULT_URI:
-                    if (data.getData() != null) {
-                        this.imageUri = data.getData().toString();
+                    if (data.getExtras() != null) {
+                        this.imageUri = (String) data.getExtras().get(IMAGE_URI);
+                        Picasso.with(this).load(this.imageUri).into(this.editImageButton);
                     }
                     break;
                 default:

@@ -96,17 +96,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refreshButton:
-                switch (this.currentTab) {
-                    case 0:
-                        this.itemsAdapter.setTabPosition(0);
-                        displayAllItems();
-                        break;
-                    case 1:
-                        this.itemsAdapter.setTabPosition(1);
-                        displayMyItems();
-                        break;
-                    default:
-                        break;
+                if (this.itemsAdapter != null) {
+                    switch (this.currentTab) {
+                        case 0:
+                            this.itemsAdapter.setTabPosition(0);
+                            displayAllItems();
+                            break;
+                        case 1:
+                            this.itemsAdapter.setTabPosition(1);
+                            displayMyItems();
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 break;
             default:

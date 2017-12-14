@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -62,7 +64,7 @@ public class EditPicture extends AppCompatActivity {
 
         imageStorageRef = FirebaseStorage.getInstance().getReference();
 
-        if (this.currentItem != null) {
+        if (this.currentItem != null && this.currentItem.getImageUri() != null) {
             this.currentImageUri = Uri.parse(this.currentItem.getImageUri());
             Picasso.with(this).load(this.currentItem.getImageUri()).into(this.itemImage);
         }
@@ -115,21 +117,17 @@ public class EditPicture extends AppCompatActivity {
                 EditPicture.this.lastUploadedFile = fileName;
                 UploadTask uploadTask = imageStorageRef.child("images/" + fileName)
                         .putFile(EditPicture.this.currentImageUri);
-                uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.i(MainActivity.TAG, "Uploaded to firebase!");
-                            Toast.makeText(EditPicture.this,
-                                    "Uploaded to Firebase!",
-                                    Toast.LENGTH_LONG).show();
-                            EditPicture.this.done();
-                        } else {
-                            Log.e(MainActivity.TAG, "Failed to upload picture to firebase");
-                            Toast.makeText(EditPicture.this,
-                                    "Failed to upload to Firebase",
-                                    Toast.LENGTH_LONG).show();
-                        }
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(MainActivity.TAG, "Failed to upload picture to firebase", e);
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Log.i(MainActivity.TAG, "Uploaded to firebase!");
+                        EditPicture.this.currentImageUri = taskSnapshot.getDownloadUrl();
+                        EditPicture.this.done();
                     }
                 });
             }
