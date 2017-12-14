@@ -65,7 +65,9 @@ public class EditableItem extends AppCompatActivity {
         this.deleteItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Item.removeItem(EditableItem.this.currentItem.getItemId(), new deleteItem());
+                UserPointer userPointer = EditableItem.this.currentItem.getSellerPointer();
+                String itemId = EditableItem.this.currentItem.getItemId();
+                Item.removeItem(itemId, userPointer, new deleteItem());
             }
         });
     }

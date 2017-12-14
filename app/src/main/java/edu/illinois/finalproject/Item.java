@@ -170,16 +170,51 @@ public class Item implements Parcelable {
     }
 
     public static void removeItem(final String itemId,
+                                  final UserPointer userPointer,
                                   final AsyncTask<Boolean, Void, Void> callback) {
         ITEMS.child(itemId).removeValue(new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
                     Log.e(MainActivity.TAG, databaseError.toString());
+                    userPointer.getRealUser(new removeItemPointer(itemId, callback));
+                } else {
+                    callback.execute(false);
                 }
-                callback.execute(databaseError == null);
             }
         });
+    }
+
+    private static class removeItemPointer extends AsyncTask<User, Void, Void> {
+        private String itemId;
+        private AsyncTask<Boolean, Void, Void> callback;
+
+        public removeItemPointer(String itemId, AsyncTask<Boolean, Void, Void> callback) {
+            this.itemId = itemId;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(User... users) {
+            if (users.length > 0) {
+                User itemOwner = users[0];
+                ArrayList<ItemPointer> itemPointers = itemOwner.getItemPointers();
+                for (ItemPointer itemPointer : itemPointers) {
+                    if (itemPointer.getItemId().equals(this.itemId)) {
+                        itemPointers.remove(itemPointer);
+                        break;
+                    }
+                }
+                itemOwner.setItemPointers(itemPointers);
+                User.updateUser(itemOwner, callback);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onCancelled(Void aVoid) {
+            super.onCancelled(aVoid);
+        }
     }
 
     @Override

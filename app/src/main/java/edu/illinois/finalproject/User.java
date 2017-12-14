@@ -113,7 +113,7 @@ public class User implements Parcelable {
         });
     }
 
-    public static void updateUser(String userId,
+    public static void updateUser(User updatedUser,
                                   final AsyncTask<Boolean, Void, Void> callback) {
 
     }
