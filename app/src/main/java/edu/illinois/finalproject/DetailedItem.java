@@ -1,8 +1,10 @@
 package edu.illinois.finalproject;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,8 +39,30 @@ public class DetailedItem extends AppCompatActivity {
         this.itemName.setText(currentItem.getItemName());
         this.itemDescription.setText(currentItem.getItemDescription());
         this.itemPrice.setText("$" + currentItem.getItemPrice().toString());
-        this.itemSeller.setText(currentItem.getSellerPointer().getRealUser().getDisplayName());
         this.itemContactInfo.setText(currentItem.getContactInfo().getFormattedContactInfo());
+        currentItem.getSellerPointer().getRealUser(new getRealUser(this.itemSeller));
+    }
+
+    private static class getRealUser extends AsyncTask<User, Void, Void> {
+        private TextView itemSeller;
+
+        public getRealUser(TextView itemSeller) {
+            super();
+            this.itemSeller = itemSeller;
+        }
+
+        @Override
+        protected Void doInBackground(User... users) {
+            if (users.length > 0) {
+                this.itemSeller.setText(users[0].getDisplayName());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onCancelled(Void aVoid) {
+            Log.e(MainActivity.TAG, "Could not load a User for a DetailedItem");
+        }
     }
 
     private void setUpElements() {
