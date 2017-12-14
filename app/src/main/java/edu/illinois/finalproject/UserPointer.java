@@ -16,28 +16,44 @@ public class UserPointer implements Parcelable {
         // Default constructor required for calls to DataSnapshot.getValue()
     }
 
+    /**
+     * Typical constructor
+     * @param userId The FireBase generated UUID
+     */
     public UserPointer(String userId) {
         this.userId = userId;
         this.realUser = null;
     }
 
+    /**
+     * @return The User's FireBase generated UUID
+     */
     public String getUserId() {
         return userId;
     }
 
+    /**
+     * A convenience method to allow other classes to query the actual User object associated with
+     * this UserPointer
+     * @param callback The AsyncTask to be called on completion of User lookup
+     */
     public void getRealUser(AsyncTask<User, Void, Void> callback) {
         if (this.realUser == null) {
-            User.findUser(this.userId, null, new findUserTask(this, callback));
+            User.findUser(this.userId, null, new FindUserTask(this, callback));
         } else {
             callback.execute(this.realUser);
         }
     }
 
-    private static class findUserTask extends AsyncTask<User, Void, Void> {
+    /**
+     * A FindUserTask is an AsyncTask that will take a UserPointer and produce a User object
+     * It additionally takes a callback to provide with the resulting User object
+     */
+    private static class FindUserTask extends AsyncTask<User, Void, Void> {
         private UserPointer userPointer;
         private AsyncTask<User, Void, Void> callback;
 
-        public findUserTask(UserPointer userPointer, AsyncTask<User, Void, Void> callback) {
+        public FindUserTask(UserPointer userPointer, AsyncTask<User, Void, Void> callback) {
             super();
             this.userPointer = userPointer;
             this.callback = callback;
@@ -57,20 +73,6 @@ public class UserPointer implements Parcelable {
         protected void onCancelled(Void aVoid) {
             this.callback.cancel(false);
         }
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        UserPointer that = (UserPointer) o;
-
-        return userId != null ? userId.equals(that.userId) : that.userId == null;
     }
 
     @Override
