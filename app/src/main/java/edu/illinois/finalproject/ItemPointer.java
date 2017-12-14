@@ -1,5 +1,6 @@
 package edu.illinois.finalproject;
 
+import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -19,12 +20,38 @@ public class ItemPointer implements Parcelable {
         this.itemId = itemId;
     }
 
-    public Item getRealItem() {
-        if (realItem == null) {
-            // TODO: This should be a FireBase query to find the real User
-            // TODO: Then cache the User Object
+    public void getRealItem(AsyncTask<Item, Void, Void> callback) {
+        if (this.realItem == null) {
+            Item.findItem(this.itemId, new findItemTask(this, callback));
+        } else {
+            callback.execute(this.realItem);
         }
-        return realItem;
+    }
+
+    private static class findItemTask extends AsyncTask<Item, Void, Void> {
+        private ItemPointer itemPointer;
+        private AsyncTask<Item, Void, Void> callback;
+
+        public findItemTask(ItemPointer itemPointer, AsyncTask<Item, Void, Void> callback) {
+            super();
+            this.itemPointer = itemPointer;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Item... items) {
+            if (items.length > 0) {
+                Item foundItem = items[0];
+                this.itemPointer.realItem = foundItem; // Cache the Item for future calls
+                this.callback.execute(foundItem);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onCancelled(Void aVoid) {
+            this.callback.cancel(false);
+        }
     }
 
     public String getItemId() {
