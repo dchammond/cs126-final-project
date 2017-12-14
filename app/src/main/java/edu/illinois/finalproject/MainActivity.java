@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         this.myProfileButton = findViewById(R.id.myProfileButton);
         setUpButtons();
 
-        displayItems(getAllItems());
+        displayAllItems();
     }
 
     @Override
@@ -76,10 +76,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.refreshButton:
                 switch (this.currentTab) {
                     case 0:
-                        getAllItems();
+                        displayAllItems();
                         break;
                     case 1:
-                        getMyItems();
+                        displayMyItems();
                         break;
                     default:
                         break;
@@ -171,13 +171,13 @@ public class MainActivity extends AppCompatActivity {
                         // Make sure all Items load
                         Log.i("FINAL", "Tab 0 selected");
                         MainActivity.this.currentTab = 0;
-                        displayItems(getAllItems());
+                        displayAllItems();
                         break;
                     case 1:
                         // Make sure My Items load
                         Log.i("FINAL", "Tab 1 selected");
                         MainActivity.this.currentTab = 1;
-                        displayItems(getMyItems());
+                        displayMyItems();
                         break;
                     default:
                         Log.e("FINAL", "Tab was out of bounds!");
@@ -207,14 +207,48 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private List<Item> getAllItems() {
-        // TODO: FireBase Query
-        return Arrays.asList();
+    private void displayAllItems() {
+        Item.getAllItems(new getAllItems());
     }
 
-    private List<Item> getMyItems() {
-        // TODO: FireBase Query
-        return Arrays.asList();
+    private void displayMyItems() {
+        Item.getAllItems(new getMyItems());
+    }
+
+    private class getAllItems extends AsyncTask<Item, Void, Void> {
+        @Override
+        protected Void doInBackground(Item... items) {
+            List<Item> allItems = Arrays.asList(items);
+            MainActivity.this.displayItems(allItems);
+            return null;
+        }
+
+        @Override
+        protected void onCancelled(Void aVoid) {
+            Log.e(MainActivity.TAG, "Failed to get all Items");
+        }
+    }
+
+    private class getMyItems extends AsyncTask<Item, Void, Void> {
+        @Override
+        protected Void doInBackground(Item... items) {
+            List<Item> allItems = Arrays.asList(items);
+            List<Item> myItems = new ArrayList<>(allItems.size());
+            for (Item item : allItems) {
+                if (item.getSellerPointer()
+                        .getUserId()
+                        .equals(MainActivity.this.firebaseUser.getUid())) {
+                    myItems.add(item);
+                }
+            }
+            MainActivity.this.displayItems(myItems);
+            return null;
+        }
+
+        @Override
+        protected void onCancelled(Void aVoid) {
+            Log.e(MainActivity.TAG, "Failed to get my Items");
+        }
     }
 
     private void displayItems(List<Item> itemsToDisplay) {
