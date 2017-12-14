@@ -165,6 +165,7 @@ public class Item implements Parcelable {
         dbRef.setValue(newItem).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                Log.i(MainActivity.TAG, "Created an Item!");
                 owningUser.addItemPointer(newItem.getItemId());
                 User.updateUser(owningUser, callback);
             }
@@ -176,6 +177,7 @@ public class Item implements Parcelable {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                Log.i(MainActivity.TAG, "Updated an Item!");
                 callback.execute(task.isSuccessful());
             }
         });
@@ -189,9 +191,10 @@ public class Item implements Parcelable {
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
                     Log.e(MainActivity.TAG, databaseError.toString());
-                    userPointer.getRealUser(new removeItemPointer(itemId, callback));
-                } else {
                     callback.execute(false);
+                } else {
+                    Log.i(MainActivity.TAG, "Deleted an Item!");
+                    userPointer.getRealUser(new removeItemPointer(itemId, callback));
                 }
             }
         });

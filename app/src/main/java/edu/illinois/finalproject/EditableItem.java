@@ -87,6 +87,7 @@ public class EditableItem extends AppCompatActivity {
 
         if (this.currentItem != null) {
             setUpElements();
+            this.imageUri = currentItem.getImageUri();
             Picasso.with(this).load(currentItem.getImageUri()).into(this.editImageButton);
         }
     }
