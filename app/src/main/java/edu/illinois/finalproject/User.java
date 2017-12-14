@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 public class User implements Parcelable {
     private String userId;
+    private String firebaseId;
     private String displayName;
     private ArrayList<ItemPointer> itemPointers;
 
@@ -32,7 +33,8 @@ public class User implements Parcelable {
         // Default constructor required for calls to DataSnapshot.getValue()
     }
 
-    public User(String displayName, ArrayList<ItemPointer> itemPointers) {
+    public User(String firebaseId, String displayName, ArrayList<ItemPointer> itemPointers) {
+        this.firebaseId = firebaseId;
         this.displayName = displayName;
         this.itemPointers = itemPointers;
     }
@@ -43,6 +45,14 @@ public class User implements Parcelable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getFirebaseId() {
+        return firebaseId;
+    }
+
+    public void setFirebaseId(String firebaseId) {
+        this.firebaseId = firebaseId;
     }
 
     public String getDisplayName() {
@@ -92,13 +102,17 @@ public class User implements Parcelable {
                 itemPointers.equals(user.itemPointers) : user.itemPointers == null;
     }
 
-    public static void findUser(final String userId, final AsyncTask<User, Void, Void> callback) {
+    public static void findUser(final String userId,
+                                final String firebaseId,
+                                final AsyncTask<User, Void, Void> callback) {
         USERS.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userObject : dataSnapshot.getChildren()) {
                     User user = userObject.getValue(User.class);
-                    if (user != null && user.getUserId().equals(userId)) {
+                    if (user != null
+                            && (user.getUserId().equals(userId)
+                                || user.getFirebaseId().equals(firebaseId))) {
                         callback.execute(user);
                         return;
                     }

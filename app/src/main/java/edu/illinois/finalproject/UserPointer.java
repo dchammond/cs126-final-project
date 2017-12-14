@@ -27,7 +27,7 @@ public class UserPointer implements Parcelable {
 
     public void getRealUser(AsyncTask<User, Void, Void> callback) {
         if (this.realUser == null) {
-            User.findUser(this.userId, new findUserTask(this, callback));
+            User.findUser(this.userId, null, new findUserTask(this, callback));
         } else {
             callback.execute(this.realUser);
         }

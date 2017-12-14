@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = this.firebaseUser;
                 User newUser = new User(
                         user.getDisplayName(),
+                        user.getUid(),
                         new ArrayList<ItemPointer>());
                 User.createUser(newUser, new createUserTask());
                 MainActivity.this.currentUser = newUser;
@@ -159,8 +160,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpUser() {
-        String userId = this.firebaseUser.getUid();
-        User.findUser(userId, new findUserTask(this.firebaseUser));
+        String firebaseId = this.firebaseUser.getUid();
+        User.findUser(null, firebaseId, new findUserTask(this.firebaseUser));
     }
 
     private void setUpTabs() {
@@ -221,8 +222,13 @@ public class MainActivity extends AppCompatActivity {
     private class getAllItems extends AsyncTask<Item, Void, Void> {
         @Override
         protected Void doInBackground(Item... items) {
-            List<Item> allItems = Arrays.asList(items);
-            MainActivity.this.displayItems(allItems);
+            final List<Item> allItems = Arrays.asList(items);
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    displayItems(allItems);
+                }
+            });
             return null;
         }
 
@@ -236,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Item... items) {
             List<Item> allItems = Arrays.asList(items);
-            List<Item> myItems = new ArrayList<>(allItems.size());
+            final List<Item> myItems = new ArrayList<>(allItems.size());
             for (Item item : allItems) {
                 if (item.getSellerPointer()
                         .getUserId()
@@ -244,7 +250,12 @@ public class MainActivity extends AppCompatActivity {
                     myItems.add(item);
                 }
             }
-            MainActivity.this.displayItems(myItems);
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    displayItems(myItems);
+                }
+            });
             return null;
         }
 
