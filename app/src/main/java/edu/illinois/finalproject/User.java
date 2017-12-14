@@ -1,7 +1,18 @@
 package edu.illinois.finalproject;
 
+import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -13,6 +24,9 @@ public class User implements Parcelable {
     private String userId;
     private String displayName;
     private ArrayList<ItemPointer> itemPointers;
+
+    private final static FirebaseDatabase DATABASE = FirebaseDatabase.getInstance();
+    private final static DatabaseReference USERS = DATABASE.getReference().child("users");
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue()
@@ -64,6 +78,37 @@ public class User implements Parcelable {
             return false;
         return itemPointers != null ?
                 itemPointers.equals(user.itemPointers) : user.itemPointers == null;
+    }
+
+    public static void findUser(final String userId, final AsyncTask<User, Void, Void> callback) {
+        USERS.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userObject : dataSnapshot.getChildren()) {
+                    User user = userObject.getValue(User.class);
+                    if (user != null && user.getUserId().equals(userId)) {
+                        callback.execute(user);
+                        break;
+                    }
+                }
+                callback.execute();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(MainActivity.TAG, "findUser task was canceled");
+            }
+        });
+    }
+
+    public static void createUser(final User newUser,
+                                  final AsyncTask<Boolean, Void, Void> callback) {
+        USERS.push().setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                callback.execute(task.isSuccessful());
+            }
+        });
     }
 
     @Override

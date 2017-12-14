@@ -19,14 +19,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "final-project";
+    public static final String TAG = "final-project";
     private static final int RESULT_AUTH = 3;
 
     private static final List<AuthUI.IdpConfig> signupProviders = Arrays.asList(
             new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
             new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
     );
-    private FirebaseUser currentUser;
+    private FirebaseUser firebaseUser;
+    private static User currentUser;
 
     private TabLayout tabLayout;
     private int currentTab;
@@ -38,11 +39,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (this.currentUser == null) {
+        this.firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (this.firebaseUser == null) {
             signIn();
         } else {
-            Log.i(TAG, "We are logged in as: " + this.currentUser);
+            Log.i(TAG, "We are logged in as: " + this.firebaseUser);
         }
 
         this.tabLayout = findViewById(R.id.tabLayout);
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             switch(requestCode) {
                 case RESULT_AUTH:
-                    this.currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    this.firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                     break;
                 default:
                     Log.e(MainActivity.TAG,"Got requestCode:" + requestCode);
@@ -142,5 +143,9 @@ public class MainActivity extends AppCompatActivity {
 
     public int getCurrentTab() {
         return currentTab;
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
     }
 }
