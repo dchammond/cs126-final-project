@@ -14,6 +14,10 @@ public class ContactInfo implements Parcelable {
         // Default constructor required for calls to DataSnapshot.getValue()
     }
 
+    /**
+     * Standard constructor
+     * @param contactInfo The String blob with contact info
+     */
     public ContactInfo(String contactInfo) {
         this.contactInfo = contactInfo;
     }
