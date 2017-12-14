@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    /* ------------------MEMBER VARIABLES------------------ */
     public static final String TAG = "final-project";
     private static final int RESULT_AUTH = 1;
     private static final int RESULT_PROFILE = 2;
@@ -42,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
     private Button myProfileButton;
 
     private ItemsAdapter itemsAdapter;
+    /* ------------------MEMBER VARIABLES------------------ */
 
+    /* ------------------OVERRIDES------------------------- */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,64 +120,6 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
-
-    private class findUserTask extends AsyncTask<User, Void, Void> {
-
-        private FirebaseUser firebaseUser;
-
-        public findUserTask(FirebaseUser firebaseUser) {
-            super();
-            this.firebaseUser = firebaseUser;
-        }
-
-        @Override
-        protected Void doInBackground(User... users) {
-            if (users.length == 0) {
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        FirebaseUser user = findUserTask.this.firebaseUser;
-                        User newUser = new User(
-                                user.getUid(),
-                                user.getDisplayName(),
-                                new ArrayList<ItemPointer>());
-                        User.createUser(newUser, new createUserTask());
-                        MainActivity.this.currentUser = newUser;
-                    }
-                });
-            } else {
-                MainActivity.this.currentUser = users[0];
-            }
-            Log.i(MainActivity.TAG, "Found or Created User");
-            return null;
-        }
-
-        @Override
-        protected void onCancelled(Void aVoid) {
-            super.onCancelled(aVoid);
-        }
-    }
-
-    private static class createUserTask extends AsyncTask<Boolean, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Boolean... booleans) {
-            boolean userCreated = booleans[0];
-            if (!userCreated) {
-                Log.e(MainActivity.TAG, "Failed to create a user in FireBase");
-            }
-            return null;
-        }
-    }
-
-    private void signIn() {
-        startActivityForResult(AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(signupProviders)
-                        .build(),
-                        RESULT_AUTH);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -194,12 +139,25 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "resultCode was NOT RESULT_OKAY, it was: " + resultCode);
         }
     }
+    /* ------------------OVERRIDES------------------------- */
 
-    private void setUpUser() {
-        String firebaseId = this.firebaseUser.getUid();
-        User.findUser(null, firebaseId, new findUserTask(this.firebaseUser));
+    /* ------------------METHODS--------------------------- */
+    // Launch Firebase UI sign-in
+    private void signIn() {
+        startActivityForResult(AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(signupProviders)
+                        .build(),
+                RESULT_AUTH);
     }
 
+    // Dispatches AsyncTask calls to find or create the User obejct
+    private void setUpUser() {
+        String firebaseId = this.firebaseUser.getUid();
+        User.findUser(null, firebaseId, new FindUserTask(this.firebaseUser));
+    }
+
+    // Tell the All Items and My Items tabs how to behave
     private void setUpTabs() {
         this.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -207,32 +165,28 @@ public class MainActivity extends AppCompatActivity {
                 switch(tab.getPosition()) {
                     case 0:
                         // Make sure all Items load
-                        Log.i("FINAL", "Tab 0 selected");
+                        Log.i(MainActivity.TAG, "Tab 0 selected");
                         MainActivity.this.currentTab = 0;
                         MainActivity.this.itemsAdapter.setTabPosition(0);
                         displayAllItems();
                         break;
                     case 1:
                         // Make sure My Items load
-                        Log.i("FINAL", "Tab 1 selected");
+                        Log.i(MainActivity.TAG, "Tab 1 selected");
                         MainActivity.this.currentTab = 1;
                         MainActivity.this.itemsAdapter.setTabPosition(1);
                         displayMyItems();
                         break;
                     default:
-                        Log.e("FINAL", "Tab was out of bounds!");
+                        Log.e(MainActivity.TAG, "Tab was out of bounds!");
                 }
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
+            public void onTabUnselected(TabLayout.Tab tab) {}
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
     }
 
@@ -250,14 +204,92 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayAllItems() {
-        Item.getAllItems(new getAllItems());
+        Item.getAllItems(new GetAllItems());
     }
 
     private void displayMyItems() {
-        Item.getAllItems(new getMyItems());
+        Item.getAllItems(new GetMyItems());
     }
 
-    private class getAllItems extends AsyncTask<Item, Void, Void> {
+    private void displayItems(List<Item> itemsToDisplay) {
+        if (this.itemsAdapter == null) {
+            this.itemsAdapter = new ItemsAdapter(itemsToDisplay, this.currentTab);
+            final RecyclerView itemList = findViewById(R.id.itemsRecyclerView);
+            itemList.setAdapter(this.itemsAdapter);
+            itemList.setLayoutManager(
+                    new LinearLayoutManager(this,
+                            LinearLayoutManager.VERTICAL,
+                            false)
+            );
+        } else {
+            this.itemsAdapter.refreshItems(itemsToDisplay);
+        }
+    }
+    /* ------------------METHODS--------------------------- */
+
+    /* ------------------ASYNC TASKS----------------------- */
+
+    /**
+     * A FindUserTask is an AsyncTask used to handle retrieving the logged-in user's app-specific
+     * User object, or create one if none exists utilizing CreateUserTask
+     */
+    private class FindUserTask extends AsyncTask<User, Void, Void> {
+        private FirebaseUser firebaseUser;
+
+        public FindUserTask(FirebaseUser firebaseUser) {
+            super();
+            this.firebaseUser = firebaseUser;
+        }
+
+        @Override
+        protected Void doInBackground(User... users) {
+            if (users.length == 0) {
+                // Necessary because some code cannot be run off of the UI thread
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FirebaseUser user = FindUserTask.this.firebaseUser;
+                        User newUser = new User(
+                                user.getUid(),
+                                user.getDisplayName(),
+                                new ArrayList<ItemPointer>());
+                        User.createUser(newUser, new CreateUserTask());
+                        MainActivity.this.currentUser = newUser;
+                    }
+                });
+            } else {
+                MainActivity.this.currentUser = users[0];
+            }
+            Log.i(MainActivity.TAG, "Found or Created User");
+            return null;
+        }
+
+        @Override
+        protected void onCancelled(Void aVoid) {
+            super.onCancelled(aVoid);
+        }
+    }
+
+    /**
+     * A CreateUserTask is an AsyncTask used to create a new User object in FireBase.
+     * The Boolean return value is useful to check if the operation succeeded
+     */
+    private static class CreateUserTask extends AsyncTask<Boolean, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Boolean... booleans) {
+            boolean userCreated = booleans[0];
+            if (!userCreated) {
+                Log.e(MainActivity.TAG, "Failed to create a user in FireBase");
+            }
+            return null;
+        }
+    }
+
+    /**
+     * A GetAllItems is an AsyncTask to hand;e retrieving a list fo all Items from the database
+     */
+    private class GetAllItems extends AsyncTask<Item, Void, Void> {
         @Override
         protected Void doInBackground(Item... items) {
             final List<Item> allItems = Arrays.asList(items);
@@ -276,7 +308,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class getMyItems extends AsyncTask<Item, Void, Void> {
+    /**
+     * A GetMyItems is an AsyncTask to hand;e retrieving a list fo all Items from the database
+     * and then discards those not created by the current user
+     */
+    private class GetMyItems extends AsyncTask<Item, Void, Void> {
         @Override
         protected Void doInBackground(Item... items) {
             List<Item> allItems = Arrays.asList(items);
@@ -302,23 +338,5 @@ public class MainActivity extends AppCompatActivity {
             Log.e(MainActivity.TAG, "Failed to get my Items");
         }
     }
-
-    private void displayItems(List<Item> itemsToDisplay) {
-        if (this.itemsAdapter == null) {
-            this.itemsAdapter = new ItemsAdapter(itemsToDisplay, this.currentTab);
-            final RecyclerView itemList = findViewById(R.id.itemsRecyclerView);
-            itemList.setAdapter(this.itemsAdapter);
-            itemList.setLayoutManager(
-                    new LinearLayoutManager(this,
-                            LinearLayoutManager.VERTICAL,
-                            false)
-            );
-        } else {
-            this.itemsAdapter.refreshItems(itemsToDisplay);
-        }
-    }
-
-    public int getCurrentTab() {
-        return currentTab;
-    }
+    /* ------------------ASYNC TASKS----------------------- */
 }
