@@ -37,6 +37,16 @@ public class Item implements Parcelable {
         // Default constructor required for calls to DataSnapshot.getValue()
     }
 
+    /**
+     * Standard Constructor
+     * @param itemName Item Name
+     * @param itemDescription Item Long Description
+     * @param itemPrice Item Price
+     * @param sellerPointer Pointer to the Seller
+     * @param datePosted Timestamp
+     * @param contactInfo Contact Info for this item
+     * @param imageUri Location of Item image
+     */
     public Item(String itemName,
                 String itemDescription,
                 Double itemPrice,
@@ -117,6 +127,10 @@ public class Item implements Parcelable {
         this.imageUri = imageUri;
     }
 
+    /**
+     * Useful static method to get all Items in the Database
+     * @param callback The callback to receive the list of Items
+     */
     public static void getAllItems(final AsyncTask<Item, Void, Void> callback) {
         ITEMS.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -135,13 +149,18 @@ public class Item implements Parcelable {
         });
     }
 
-    public static void findItem(final String userId, final AsyncTask<Item, Void, Void> callback) {
+    /**
+     * Useful static method to find a certain item in the Database
+     * @param itemId The itemId used to identify the Item
+     * @param callback The callback to receive the list of Items
+     */
+    public static void findItem(final String itemId, final AsyncTask<Item, Void, Void> callback) {
         ITEMS.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot itemObject : dataSnapshot.getChildren()) {
                     Item item = itemObject.getValue(Item.class);
-                    if (item != null && item.getItemId().equals(userId)) {
+                    if (item != null && item.getItemId().equals(itemId)) {
                         callback.execute(item);
                         return;
                     }
@@ -157,6 +176,12 @@ public class Item implements Parcelable {
         });
     }
 
+    /**
+     * Useful static method to create a new Item
+     * @param newItem the new Item object
+     * @param owningUser the User that owns the Item
+     * @param callback The callback to receive the success status
+     */
     public static void createItem(final Item newItem,
                                   final User owningUser,
                                   final AsyncTask<Boolean, Void, Void> callback) {
@@ -172,6 +197,11 @@ public class Item implements Parcelable {
         });
     }
 
+    /**
+     * Usful static method to update an Item
+     * @param updatedItem The new Item object
+     * @param callback The callback to receive the success status
+     */
     public static void updateItem(Item updatedItem, final AsyncTask<Boolean, Void, Void> callback) {
         ITEMS.child(updatedItem.getItemId()).setValue(updatedItem)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -183,6 +213,13 @@ public class Item implements Parcelable {
         });
     }
 
+    /**
+     * Usful static method to remove an Item
+     * @param itemId The itemId to be deleted
+     * @param userPointer The UserPointer that will be used to find the owning User to remove the
+     *                   ItemPointer from
+     * @param callback The callback to receive the success status
+     */
     public static void removeItem(final String itemId,
                                   final UserPointer userPointer,
                                   final AsyncTask<Boolean, Void, Void> callback) {
@@ -194,17 +231,21 @@ public class Item implements Parcelable {
                     callback.execute(false);
                 } else {
                     Log.i(MainActivity.TAG, "Deleted an Item!");
-                    userPointer.getRealUser(new removeItemPointer(itemId, callback));
+                    userPointer.getRealUser(new RemoveItemPointer(itemId, callback));
                 }
             }
         });
     }
 
-    private static class removeItemPointer extends AsyncTask<User, Void, Void> {
+    /**
+     * A RemoveItemPointer is an AsyncTask useful to handle removing an ItemPointer from a User
+     * The callback receives the success status of the operation
+     */
+    private static class RemoveItemPointer extends AsyncTask<User, Void, Void> {
         private String itemId;
         private AsyncTask<Boolean, Void, Void> callback;
 
-        public removeItemPointer(String itemId, AsyncTask<Boolean, Void, Void> callback) {
+        public RemoveItemPointer(String itemId, AsyncTask<Boolean, Void, Void> callback) {
             this.itemId = itemId;
             this.callback = callback;
         }
@@ -223,31 +264,6 @@ public class Item implements Parcelable {
         protected void onCancelled(Void aVoid) {
             super.onCancelled(aVoid);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Item item = (Item) o;
-
-        if (itemName != null ? !itemName.equals(item.itemName) : item.itemName != null)
-            return false;
-        if (itemId != null ? !itemId.equals(item.itemId) : item.itemId != null) return false;
-        if (itemDescription != null ?
-                !itemDescription.equals(item.itemDescription) : item.itemDescription != null)
-            return false;
-        if (itemPrice != null ? !itemPrice.equals(item.itemPrice) : item.itemPrice != null)
-            return false;
-        if (sellerPointer != null ?
-                !sellerPointer.equals(item.sellerPointer) : item.sellerPointer != null)
-            return false;
-        if (datePosted != null ? !datePosted.equals(item.datePosted) : item.datePosted != null)
-            return false;
-        if (contactInfo != null ? !contactInfo.equals(item.contactInfo) : item.contactInfo != null)
-            return false;
-        return imageUri != null ? imageUri.equals(item.imageUri) : item.imageUri == null;
     }
 
     @Override
