@@ -59,9 +59,10 @@ public class ProfilePage extends AppCompatActivity {
         this.updateInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                User editedUser = ProfilePage.this.currentUser;
-                editedUser.setDisplayName(ProfilePage.this.editMyName.getText().toString());
-                User.updateUser(editedUser, new updatedUser());
+                ProfilePage.this.currentUser
+                        .setDisplayName(ProfilePage.this.editMyName.getText().toString());
+                User.updateUser(ProfilePage.this.currentUser, new updatedUser());
+                done();
             }
         });
         this.addNewItemButton.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +116,7 @@ public class ProfilePage extends AppCompatActivity {
 
     private String extractEmail() {
         final Intent intent = getIntent();
-        return intent.getParcelableExtra(APP_USER_EMAIL);
+        return intent.getStringExtra(APP_USER_EMAIL);
     }
 
     private static class updatedUser extends AsyncTask<Boolean, Void, Void> {
@@ -135,5 +136,12 @@ public class ProfilePage extends AppCompatActivity {
             super.onCancelled(aVoid);
             Log.e(MainActivity.TAG, "Editing user was canceled");
         }
+    }
+
+    private void done() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(MainActivity.USER_KEY, this.currentUser);
+        setResult(ProfilePage.RESULT_OK, resultIntent);
+        finish();
     }
 }

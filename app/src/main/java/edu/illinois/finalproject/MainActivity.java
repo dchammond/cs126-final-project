@@ -25,7 +25,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "final-project";
-    private static final int RESULT_AUTH = 3;
+    private static final int RESULT_AUTH = 1;
+    private static final int RESULT_PROFILE = 2;
+    public static final String USER_KEY = "user_key";
 
     private static final List<AuthUI.IdpConfig> signupProviders = Arrays.asList(
             new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
@@ -105,14 +107,22 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(User... users) {
             if (users.length == 0) {
-                FirebaseUser user = this.firebaseUser;
-                User newUser = new User(
-                        user.getDisplayName(),
-                        user.getUid(),
-                        new ArrayList<ItemPointer>());
-                User.createUser(newUser, new createUserTask());
-                MainActivity.this.currentUser = newUser;
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        FirebaseUser user = findUserTask.this.firebaseUser;
+                        User newUser = new User(
+                                user.getUid(),
+                                user.getDisplayName(),
+                                new ArrayList<ItemPointer>());
+                        User.createUser(newUser, new createUserTask());
+                        MainActivity.this.currentUser = newUser;
+                    }
+                });
+            } else {
+                MainActivity.this.currentUser = users[0];
             }
+            Log.i(MainActivity.TAG, "Found or Created User");
             return null;
         }
 
@@ -149,6 +159,9 @@ public class MainActivity extends AppCompatActivity {
                 case RESULT_AUTH:
                     this.firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                     setUpUser();
+                    break;
+                case RESULT_PROFILE:
+                    this.currentUser = (User) data.getExtras().get(USER_KEY);
                     break;
                 default:
                     Log.e(MainActivity.TAG,"Got requestCode:" + requestCode);
@@ -206,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent profileIntent = new Intent(context, ProfilePage.class);
                 profileIntent.putExtra(ProfilePage.APP_USER_KEY, MainActivity.this.currentUser);
                 profileIntent.putExtra(ProfilePage.APP_USER_EMAIL, MainActivity.this.firebaseUser.getEmail());
-                context.startActivity(profileIntent);
+                startActivityForResult(profileIntent, RESULT_PROFILE);
             }
         });
     }

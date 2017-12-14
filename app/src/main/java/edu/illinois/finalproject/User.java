@@ -21,8 +21,8 @@ import java.util.ArrayList;
  */
 
 public class User implements Parcelable {
-    private String userId;
     private String firebaseId;
+    private String userId;
     private String displayName;
     private ArrayList<ItemPointer> itemPointers;
 
@@ -110,11 +110,12 @@ public class User implements Parcelable {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userObject : dataSnapshot.getChildren()) {
                     User user = userObject.getValue(User.class);
-                    if (user != null
-                            && (user.getUserId().equals(userId)
-                                || user.getFirebaseId().equals(firebaseId))) {
-                        callback.execute(user);
-                        return;
+                    if (user != null) {
+                        if (user.getUserId().equals(userId)
+                                || user.getFirebaseId().equals(firebaseId)) {
+                            callback.execute(user);
+                            return;
+                        }
                     }
                 }
                 callback.execute();
@@ -158,12 +159,14 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.firebaseId);
         dest.writeString(this.userId);
         dest.writeString(this.displayName);
         dest.writeTypedList(this.itemPointers);
     }
 
     protected User(Parcel in) {
+        this.firebaseId = in.readString();
         this.userId = in.readString();
         this.displayName = in.readString();
         this.itemPointers = in.createTypedArrayList(ItemPointer.CREATOR);

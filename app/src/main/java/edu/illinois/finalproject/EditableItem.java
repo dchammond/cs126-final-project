@@ -119,7 +119,7 @@ public class EditableItem extends AppCompatActivity {
 
                 detailedIntent.putExtra(EditPicture.getEditableImageKey(), EditableItem.this.currentItem);
 
-                context.startActivity(detailedIntent);
+                startActivityForResult(detailedIntent, RESULT_URI);
             }
         });
         if (this.deleteItemButton != null) {
