@@ -97,6 +97,7 @@ public class User implements Parcelable {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(MainActivity.TAG, "findUser task was canceled");
+                callback.cancel(false);
             }
         });
     }

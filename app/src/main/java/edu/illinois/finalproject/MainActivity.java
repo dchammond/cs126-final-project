@@ -2,6 +2,7 @@ package edu.illinois.finalproject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
             new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
     );
     private FirebaseUser firebaseUser;
-    private static User currentUser;
 
     private TabLayout tabLayout;
     private int currentTab;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
             signIn();
         } else {
             Log.i(TAG, "We are logged in as: " + this.firebaseUser);
+            setUpUser();
         }
 
         this.tabLayout = findViewById(R.id.tabLayout);
@@ -55,12 +57,52 @@ public class MainActivity extends AppCompatActivity {
         displayItems(getAllItems());
     }
 
+    private static class findUserTask extends AsyncTask<User, Void, Void> {
+
+        private FirebaseUser firebaseUser;
+
+        public findUserTask(FirebaseUser firebaseUser) {
+            super();
+            this.firebaseUser = firebaseUser;
+        }
+
+        @Override
+        protected Void doInBackground(User... users) {
+            if (users.length == 0) {
+                FirebaseUser user = this.firebaseUser;
+                User newUser = new User(
+                        user.getUid(),
+                        user.getDisplayName(),
+                        new ArrayList<ItemPointer>());
+                User.createUser(newUser, new createUserTask());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onCancelled(Void aVoid) {
+            super.onCancelled(aVoid);
+        }
+    }
+
+    private static class createUserTask extends AsyncTask<Boolean, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Boolean... booleans) {
+            boolean userCreated = booleans[0];
+            if (!userCreated) {
+                Log.e(MainActivity.TAG, "Failed to create a user in FireBase");
+            }
+            return null;
+        }
+    }
+
     private void signIn() {
         startActivityForResult(AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(signupProviders)
                         .build(),
-                RESULT_AUTH);
+                        RESULT_AUTH);
     }
 
     @Override
@@ -69,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
             switch(requestCode) {
                 case RESULT_AUTH:
                     this.firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                    setUpUser();
                     break;
                 default:
                     Log.e(MainActivity.TAG,"Got requestCode:" + requestCode);
@@ -77,6 +120,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.e(TAG, "resultCode was NOT RESULT_OKAY, it was: " + resultCode);
         }
+    }
+
+    private void setUpUser() {
+        String userId = this.firebaseUser.getUid();
+        User.findUser(userId, new findUserTask(this.firebaseUser));
     }
 
     private void setUpTabs() {
@@ -143,9 +191,5 @@ public class MainActivity extends AppCompatActivity {
 
     public int getCurrentTab() {
         return currentTab;
-    }
-
-    public static User getCurrentUser() {
-        return currentUser;
     }
 }
