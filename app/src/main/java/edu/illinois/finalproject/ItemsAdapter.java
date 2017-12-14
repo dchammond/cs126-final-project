@@ -60,7 +60,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Item itemToDisplay = this.allItemsToDisplay.get(position);
-        itemToDisplay.getSellerPointer().getRealUser(new getRealUser(holder.itemSeller));
+        itemToDisplay.getSellerPointer().getRealUser(new GetRealUser(holder.itemSeller));
         holder.itemName.setText(itemToDisplay.getItemName());
         holder.itemPrice.setText("$" + itemToDisplay.getItemPrice().toString());
         final Context context = holder.itemView.getContext();
@@ -70,6 +70,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
             public void onClick(View v) {
                 final Context context = v.getContext();
 
+                // If the Tab is on My Items (1), we want to edit the item, else just display
                 if (ItemsAdapter.this.tabPosition == 1) {
                     Intent editableIntent = new Intent(context, EditableItem.class);
 
@@ -88,10 +89,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         });
     }
 
-    private class getRealUser extends AsyncTask<User, Void, Void> {
+    /**
+     * A GetRealUser is an AsyncTask to query FireBase for a real User object
+     */
+    private class GetRealUser extends AsyncTask<User, Void, Void> {
         private TextView itemSeller;
 
-        public getRealUser(TextView itemSeller) {
+        public GetRealUser(TextView itemSeller) {
             super();
             this.itemSeller = itemSeller;
         }
