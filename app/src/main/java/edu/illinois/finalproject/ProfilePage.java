@@ -17,8 +17,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.util.List;
-
 /**
  * Created by dillon on 12/7/17.
  */
@@ -61,7 +59,7 @@ public class ProfilePage extends AppCompatActivity {
             public void onClick(View view) {
                 ProfilePage.this.currentUser
                         .setDisplayName(ProfilePage.this.editMyName.getText().toString());
-                User.updateUser(ProfilePage.this.currentUser, new updatedUser());
+                User.updateUser(ProfilePage.this.currentUser, new UpdateUser());
                 done();
             }
         });
@@ -119,7 +117,10 @@ public class ProfilePage extends AppCompatActivity {
         return intent.getStringExtra(APP_USER_EMAIL);
     }
 
-    private static class updatedUser extends AsyncTask<Boolean, Void, Void> {
+    /**
+     * An UpdateUser is an AsyncTask that is used to check the result of a User.updateUser
+     */
+    private static class UpdateUser extends AsyncTask<Boolean, Void, Void> {
         @Override
         protected Void doInBackground(Boolean... booleans) {
             if (booleans.length > 0) {
