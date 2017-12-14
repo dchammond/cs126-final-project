@@ -36,18 +36,21 @@ public class DetailedItem extends AppCompatActivity {
 
         Picasso.with(this).load(currentItem.getImageUri()).into(this.itemImage);
 
-        currentItem.getSellerPointer().getRealUser(new getRealUser(this.itemSeller));
+        currentItem.getSellerPointer().getRealUser(new GetRealUser(this.itemSeller));
         this.itemName.setText(currentItem.getItemName());
         this.itemDescription.setText(currentItem.getItemDescription());
         this.itemPrice.setText("$" + currentItem.getItemPrice().toString());
         this.itemContactInfo.setText(currentItem.getContactInfo().getContactInfo());
     }
 
-    private class getRealUser extends AsyncTask<User, Void, Void> {
+    /**
+     * A GetRealUser is an AsyncTask used to get the User object from a UserPointer
+     */
+    private class GetRealUser extends AsyncTask<User, Void, Void> {
         private TextView itemSeller;
         private User user;
 
-        public getRealUser(TextView itemSeller) {
+        public GetRealUser(TextView itemSeller) {
             super();
             this.itemSeller = itemSeller;
         }
