@@ -134,6 +134,11 @@ public class EditPicture extends AppCompatActivity {
         });
     }
 
+    /**
+     * Create the local storage File for the image
+     * @return A File object for the Image
+     * @throws IOException
+     */
     private File createImageFile() throws IOException {
         // Create an image file name
         String imageFileName =
@@ -147,6 +152,11 @@ public class EditPicture extends AppCompatActivity {
         return image;
     }
 
+    /**
+     * Turn a device local URI into a FileName
+     * @param uri THe device local Uri
+     * @return FileName
+     */
     private String getFileNameFromUri(Uri uri) {
         // Adapted from https://stackoverflow.com/a/38304115
         Cursor cursor =
