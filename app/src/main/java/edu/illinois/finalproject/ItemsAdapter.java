@@ -23,6 +23,7 @@ import java.util.List;
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
     private List<Item> allItemsToDisplay = new ArrayList<>();
     private int tabPosition;
+    private User currentUser;
 
     /**
      * Create a new ItemsAdapter to get displayed on screen
@@ -31,6 +32,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
      */
     public ItemsAdapter(List<Item> allItemsToDisplay, int tabPosition) {
         this.allItemsToDisplay = allItemsToDisplay;
+        this.tabPosition = tabPosition;
+    }
+
+    public void setTabPosition(int tabPosition) {
         this.tabPosition = tabPosition;
     }
 
@@ -66,11 +71,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
                 final Context context = v.getContext();
 
                 if (ItemsAdapter.this.tabPosition == 1) {
-                    Intent detailedIntent = new Intent(context, EditableItem.class);
+                    Intent editableIntent = new Intent(context, EditableItem.class);
 
-                    detailedIntent.putExtra(EditableItem.EDITABLE_ITEM_KEY, itemToDisplay);
+                    editableIntent.putExtra(EditableItem.EDITABLE_ITEM_KEY, itemToDisplay);
+                    editableIntent.putExtra(EditableItem.USER_KEY, ItemsAdapter.this.currentUser);
 
-                    context.startActivity(detailedIntent);
+                    context.startActivity(editableIntent);
                 } else {
                     Intent detailedIntent = new Intent(context, DetailedItem.class);
 
@@ -82,7 +88,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         });
     }
 
-    private static class getRealUser extends AsyncTask<User, Void, Void> {
+    private class getRealUser extends AsyncTask<User, Void, Void> {
         private TextView itemSeller;
 
         public getRealUser(TextView itemSeller) {
@@ -93,9 +99,15 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         @Override
         protected Void doInBackground(User... users) {
             if (users.length > 0) {
-                this.itemSeller.setText(users[0].getDisplayName());
+                ItemsAdapter.this.currentUser = users[0];
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            this.itemSeller.setText(ItemsAdapter.this.currentUser.getDisplayName());
         }
 
         @Override

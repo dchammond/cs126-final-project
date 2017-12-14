@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,8 +20,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".DetailedItem" />
-        <activity android:name=".ProfilePage" />
-        <activity android:name=".EditableItem" />
+        <activity android:name=".ProfilePage"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".EditableItem"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".EditPicture" />
     </application>
 

@@ -66,6 +66,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (this.itemsAdapter != null) {
+            switch(this.currentTab) {
+                case 0:
+                    this.itemsAdapter.setTabPosition(0);
+                    displayAllItems();
+                    break;
+                case 1:
+                    this.itemsAdapter.setTabPosition(1);
+                    displayMyItems();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
@@ -79,9 +98,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.refreshButton:
                 switch (this.currentTab) {
                     case 0:
+                        this.itemsAdapter.setTabPosition(0);
                         displayAllItems();
                         break;
                     case 1:
+                        this.itemsAdapter.setTabPosition(1);
                         displayMyItems();
                         break;
                     default:
@@ -186,12 +207,14 @@ public class MainActivity extends AppCompatActivity {
                         // Make sure all Items load
                         Log.i("FINAL", "Tab 0 selected");
                         MainActivity.this.currentTab = 0;
+                        MainActivity.this.itemsAdapter.setTabPosition(0);
                         displayAllItems();
                         break;
                     case 1:
                         // Make sure My Items load
                         Log.i("FINAL", "Tab 1 selected");
                         MainActivity.this.currentTab = 1;
+                        MainActivity.this.itemsAdapter.setTabPosition(1);
                         displayMyItems();
                         break;
                     default:

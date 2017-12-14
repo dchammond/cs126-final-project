@@ -43,8 +43,9 @@ public class DetailedItem extends AppCompatActivity {
         this.itemContactInfo.setText(currentItem.getContactInfo().getContactInfo());
     }
 
-    private static class getRealUser extends AsyncTask<User, Void, Void> {
+    private class getRealUser extends AsyncTask<User, Void, Void> {
         private TextView itemSeller;
+        private User user;
 
         public getRealUser(TextView itemSeller) {
             super();
@@ -54,9 +55,15 @@ public class DetailedItem extends AppCompatActivity {
         @Override
         protected Void doInBackground(User... users) {
             if (users.length > 0) {
-                this.itemSeller.setText(users[0].getDisplayName());
+                this.user = users[0];
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            this.itemSeller.setText(this.user.getDisplayName());
         }
 
         @Override

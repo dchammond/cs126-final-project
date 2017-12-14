@@ -72,6 +72,9 @@ public class User implements Parcelable {
     }
 
     public void addItemPointer(String itemId) {
+        if (this.itemPointers == null) {
+            this.itemPointers = new ArrayList<ItemPointer>(1);
+        }
         this.itemPointers.add(new ItemPointer(itemId));
     }
 

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -71,7 +72,6 @@ public class EditableItem extends AppCompatActivity {
             this.deleteItemButton = null;
         } else {
             setContentView(R.layout.editable_item_with_image);
-            Picasso.with(this).load(currentItem.getImageUri()).into(this.editImageButton);
             this.deleteItemButton = findViewById(R.id.deleteItemButton);
         }
 
@@ -86,6 +86,7 @@ public class EditableItem extends AppCompatActivity {
 
         if (this.currentItem != null) {
             setUpElements();
+            Picasso.with(this).load(currentItem.getImageUri()).into(this.editImageButton);
         }
     }
 
@@ -98,7 +99,7 @@ public class EditableItem extends AppCompatActivity {
                         EditableItem.this.editItemDescription.getText().toString(),
                         Double.valueOf(
                                 EditableItem.this.editItemPrice.getText()
-                                        .toString().replaceAll("$", "")),
+                                        .toString().replaceAll("\\$", "")),
                         new UserPointer(EditableItem.this.currentUser.getUserId()),
                         new Date().toString(),
                         new ContactInfo(EditableItem.this.editItemContactInfo.getText().toString()),
@@ -107,8 +108,10 @@ public class EditableItem extends AppCompatActivity {
                 if (EditableItem.this.currentItem == null) {
                     Item.createItem(newItem, EditableItem.this.currentUser, new writeItem());
                 } else {
+                    newItem.setItemId(EditableItem.this.currentItem.getItemId());
                     Item.updateItem(newItem, new writeItem());
                 }
+                finish();
             }
         });
         this.editImageButton.setOnClickListener(new View.OnClickListener() {
