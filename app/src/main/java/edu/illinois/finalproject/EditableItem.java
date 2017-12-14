@@ -18,9 +18,11 @@ import com.squareup.picasso.Picasso;
  */
 
 public class EditableItem extends AppCompatActivity {
-    private static String EDITABLE_ITEM_KEY = "editable_item";
+    public static String EDITABLE_ITEM_KEY = "editable_item";
+    public static String USER_KEY = "user_key";
 
     private Item currentItem;
+    private User currentUser;
 
     private ImageButton editImageButton;
 
@@ -34,20 +36,30 @@ public class EditableItem extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.editable_item_with_image);
 
+        this.currentUser = extractUser();
         this.currentItem = extractItem();
 
+        if (this.currentItem == null) { // Hack to reuse this code for editing and creating
+            setContentView(R.layout.create_item);
+            this.deleteItemButton = null;
+        } else {
+            setContentView(R.layout.editable_item_with_image);
+            Picasso.with(this).load(currentItem.getImageUri()).into(this.editImageButton);
+            this.deleteItemButton = findViewById(R.id.deleteItemButton);
+        }
+
         this.editImageButton = findViewById(R.id.editImageButton);
-        Picasso.with(this).load(currentItem.getImageUri()).into(this.editImageButton);
-        this.deleteItemButton = findViewById(R.id.deleteItemButton);
         setUpButtons();
 
         this.editItemName = findViewById(R.id.editItemName);
         this.editItemDescription = findViewById(R.id.editItemDescription);
         this.editItemPrice = findViewById(R.id.editItemPrice);
         this.editItemContactInfo = findViewById(R.id.editItemContactInfo);
-        setUpElements();
+
+        if (this.currentItem != null) {
+            setUpElements();
+        }
     }
 
     private void setUpButtons() {
@@ -62,15 +74,17 @@ public class EditableItem extends AppCompatActivity {
                 context.startActivity(detailedIntent);
             }
         });
-        this.deleteItemButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UserPointer userPointer = EditableItem.this.currentItem.getSellerPointer();
-                String itemId = EditableItem.this.currentItem.getItemId();
-                Item.removeItem(itemId, userPointer, new deleteItem());
-                startActivity(new Intent(EditableItem.this, MainActivity.class));
-            }
-        });
+        if (this.deleteItemButton != null) {
+            this.deleteItemButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UserPointer userPointer = EditableItem.this.currentItem.getSellerPointer();
+                    String itemId = EditableItem.this.currentItem.getItemId();
+                    Item.removeItem(itemId, userPointer, new deleteItem());
+                    startActivity(new Intent(EditableItem.this, MainActivity.class));
+                }
+            });
+        }
     }
 
     private static class deleteItem extends AsyncTask<Boolean, Void, Void> {
@@ -92,12 +106,13 @@ public class EditableItem extends AppCompatActivity {
         this.editItemContactInfo.setText(this.currentItem.getContactInfo().getFormattedContactInfo());
     }
 
-    public static String getEditableItemKey() {
-        return EDITABLE_ITEM_KEY;
-    }
-
     private Item extractItem() {
         final Intent intent = getIntent();
         return intent.getParcelableExtra(EDITABLE_ITEM_KEY);
+    }
+
+    private User extractUser() {
+        final Intent intent = getIntent();
+        return intent.getParcelableExtra(USER_KEY);
     }
 }

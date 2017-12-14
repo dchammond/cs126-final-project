@@ -1,5 +1,6 @@
 package edu.illinois.finalproject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -66,7 +67,10 @@ public class ProfilePage extends AppCompatActivity {
         this.addNewItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Whole activity for creating new items.
+                final Context context = view.getContext();
+                Intent createItemIntent = new Intent(context, EditableItem.class);
+                createItemIntent.putExtra(EditableItem.USER_KEY, ProfilePage.this.currentUser);
+                context.startActivity(createItemIntent);
             }
         });
         this.signoutButton.setOnClickListener(new View.OnClickListener() {
