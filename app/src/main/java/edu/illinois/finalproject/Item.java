@@ -157,11 +157,23 @@ public class Item implements Parcelable {
         });
     }
 
-    public static void createItem(Item newItem,
+    public static void createItem(final Item newItem,
+                                  final User owningUser,
                                   final AsyncTask<Boolean, Void, Void> callback) {
         DatabaseReference dbRef = ITEMS.push();
         newItem.setItemId(dbRef.getKey());
         dbRef.setValue(newItem).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                owningUser.addItemPointer(newItem.getItemId());
+                User.updateUser(owningUser, callback);
+            }
+        });
+    }
+
+    public static void updateItem(Item updatedItem, final AsyncTask<Boolean, Void, Void> callback) {
+        ITEMS.child(updatedItem.getItemId()).setValue(updatedItem)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 callback.execute(task.isSuccessful());
@@ -198,14 +210,7 @@ public class Item implements Parcelable {
         protected Void doInBackground(User... users) {
             if (users.length > 0) {
                 User itemOwner = users[0];
-                ArrayList<ItemPointer> itemPointers = itemOwner.getItemPointers();
-                for (ItemPointer itemPointer : itemPointers) {
-                    if (itemPointer.getItemId().equals(this.itemId)) {
-                        itemPointers.remove(itemPointer);
-                        break;
-                    }
-                }
-                itemOwner.setItemPointers(itemPointers);
+                itemOwner.removeItemPointer(this.itemId);
                 User.updateUser(itemOwner, callback);
             }
             return null;

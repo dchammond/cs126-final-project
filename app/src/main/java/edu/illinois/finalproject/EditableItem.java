@@ -13,6 +13,8 @@ import android.widget.ImageButton;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
+
 /**
  * Created by dillon on 12/7/17.
  */
@@ -20,6 +22,7 @@ import com.squareup.picasso.Picasso;
 public class EditableItem extends AppCompatActivity {
     public static String EDITABLE_ITEM_KEY = "editable_item";
     public static String USER_KEY = "user_key";
+    public static String IMAGE_URI = "image_uri";
 
     private Item currentItem;
     private User currentUser;
@@ -31,6 +34,7 @@ public class EditableItem extends AppCompatActivity {
     private EditText editItemPrice;
     private EditText editItemContactInfo;
 
+    private Button submitItemButton;
     private Button deleteItemButton;
 
     @Override
@@ -49,6 +53,7 @@ public class EditableItem extends AppCompatActivity {
             this.deleteItemButton = findViewById(R.id.deleteItemButton);
         }
 
+        this.submitItemButton = findViewById(R.id.submitItem);
         this.editImageButton = findViewById(R.id.editImageButton);
         setUpButtons();
 
@@ -63,6 +68,27 @@ public class EditableItem extends AppCompatActivity {
     }
 
     private void setUpButtons() {
+        this.submitItemButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Item newItem = new Item(
+                        EditableItem.this.editItemName.getText().toString(),
+                        EditableItem.this.editItemDescription.getText().toString(),
+                        Double.valueOf(
+                                EditableItem.this.editItemPrice.getText()
+                                        .toString().replaceAll("$", "")),
+                        new UserPointer(EditableItem.this.currentUser.getUserId()),
+                        new Date().toString(),
+                        new ContactInfo(EditableItem.this.editItemContactInfo.getText().toString()),
+                        extractImageUri()
+                );
+                if (EditableItem.this.currentItem == null) {
+                    Item.createItem(newItem, EditableItem.this.currentUser, new writeItem());
+                } else {
+                    Item.updateItem(newItem, new writeItem());
+                }
+            }
+        });
         this.editImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,6 +113,23 @@ public class EditableItem extends AppCompatActivity {
         }
     }
 
+    private static class writeItem extends AsyncTask<Boolean, Void, Void> {
+        @Override
+        protected Void doInBackground(Boolean... booleans) {
+            boolean deleted = booleans[0];
+            if (!deleted) {
+                Log.e(MainActivity.TAG, "Failed to write Item");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onCancelled(Void aVoid) {
+            super.onCancelled(aVoid);
+            Log.e(MainActivity.TAG, "Write Item was Cancelled");
+        }
+    }
+
     private static class deleteItem extends AsyncTask<Boolean, Void, Void> {
         @Override
         protected Void doInBackground(Boolean... booleans) {
@@ -94,8 +137,13 @@ public class EditableItem extends AppCompatActivity {
             if (!deleted) {
                 Log.e(MainActivity.TAG, "Failed to delete Item");
             }
-
             return null;
+        }
+
+        @Override
+        protected void onCancelled(Void aVoid) {
+            super.onCancelled(aVoid);
+            Log.e(MainActivity.TAG, "Delete Item was Cancelled");
         }
     }
 
@@ -103,7 +151,7 @@ public class EditableItem extends AppCompatActivity {
         this.editItemName.setText(this.currentItem.getItemName());
         this.editItemDescription.setText(this.currentItem.getItemDescription());
         this.editItemPrice.setText("$" + this.currentItem.getItemPrice().toString());
-        this.editItemContactInfo.setText(this.currentItem.getContactInfo().getFormattedContactInfo());
+        this.editItemContactInfo.setText(this.currentItem.getContactInfo().getContactInfo());
     }
 
     private Item extractItem() {
@@ -114,5 +162,10 @@ public class EditableItem extends AppCompatActivity {
     private User extractUser() {
         final Intent intent = getIntent();
         return intent.getParcelableExtra(USER_KEY);
+    }
+
+    private String extractImageUri() {
+        final Intent intent = getIntent();
+        return intent.getParcelableExtra(IMAGE_URI);
     }
 }

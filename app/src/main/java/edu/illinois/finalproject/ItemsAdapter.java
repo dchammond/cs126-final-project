@@ -68,7 +68,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
                 if (ItemsAdapter.this.tabPosition == 1) {
                     Intent detailedIntent = new Intent(context, EditableItem.class);
 
-                    detailedIntent.putExtra(EditableItem.getEditableItemKey(), itemToDisplay);
+                    detailedIntent.putExtra(EditableItem.EDITABLE_ITEM_KEY, itemToDisplay);
 
                     context.startActivity(detailedIntent);
                 } else {

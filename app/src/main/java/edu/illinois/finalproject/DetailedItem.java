@@ -40,7 +40,7 @@ public class DetailedItem extends AppCompatActivity {
         this.itemName.setText(currentItem.getItemName());
         this.itemDescription.setText(currentItem.getItemDescription());
         this.itemPrice.setText("$" + currentItem.getItemPrice().toString());
-        this.itemContactInfo.setText(currentItem.getContactInfo().getFormattedContactInfo());
+        this.itemContactInfo.setText(currentItem.getContactInfo().getContactInfo());
     }
 
     private static class getRealUser extends AsyncTask<User, Void, Void> {

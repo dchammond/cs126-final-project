@@ -61,6 +61,19 @@ public class User implements Parcelable {
         this.itemPointers = itemPointers;
     }
 
+    public void addItemPointer(String itemId) {
+        this.itemPointers.add(new ItemPointer(itemId));
+    }
+
+    public void removeItemPointer(String itemId) {
+        for (ItemPointer itemPointer : this.itemPointers) {
+            if (itemPointer.getItemId().equals(itemId)) {
+                this.itemPointers.remove(itemPointer);
+                break;
+            }
+        }
+    }
+
     public UserPointer generateUserPointer() {
         return new UserPointer(this.userId);
     }
@@ -115,7 +128,13 @@ public class User implements Parcelable {
 
     public static void updateUser(User updatedUser,
                                   final AsyncTask<Boolean, Void, Void> callback) {
-
+        USERS.child(updatedUser.getUserId()).setValue(updatedUser)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                callback.execute(task.isSuccessful());
+            }
+        });
     }
 
     @Override

@@ -8,59 +8,20 @@ import android.os.Parcelable;
  */
 
 public class ContactInfo implements Parcelable {
-    private String email;
-    private String phoneNumber;
+    private String contactInfo;
 
     public ContactInfo() {
         // Default constructor required for calls to DataSnapshot.getValue()
     }
 
-    public ContactInfo(String email, String phoneNumber) {
-        this.email = email;
-        this.phoneNumber = phoneNumber;
+    public ContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
     }
 
-    public String getEmail() {
-        return email;
+    public String getContactInfo() {
+        return contactInfo;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getFormattedContactInfo() {
-        StringBuilder formatted = new StringBuilder("");
-        if (checkStringExists(this.email)) {
-            formatted.append(this.email);
-        }
-        if (checkStringExists(this.phoneNumber)) {
-            formatted.append("\n").append(this.phoneNumber);
-        }
-        return formatted.toString();
-    }
-
-    private boolean checkStringExists(String string) {
-        return string != null && string.length() > 0;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ContactInfo that = (ContactInfo) o;
-
-        if (email != null ? !email.equals(that.email) : that.email != null) return false;
-        return phoneNumber != null ? phoneNumber.equals(that.phoneNumber) : that.phoneNumber == null;
-    }
 
     @Override
     public int describeContents() {
@@ -69,13 +30,11 @@ public class ContactInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.email);
-        dest.writeString(this.phoneNumber);
+        dest.writeString(this.contactInfo);
     }
 
     protected ContactInfo(Parcel in) {
-        this.email = in.readString();
-        this.phoneNumber = in.readString();
+        this.contactInfo = in.readString();
     }
 
     public static final Creator<ContactInfo> CREATOR = new Creator<ContactInfo>() {
