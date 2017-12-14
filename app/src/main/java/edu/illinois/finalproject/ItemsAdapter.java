@@ -34,6 +34,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         this.tabPosition = tabPosition;
     }
 
+    public void refreshItems(List<Item> newItems) {
+        this.allItemsToDisplay = newItems;
+        this.notifyDataSetChanged();
+    }
+
     @Override
     public int getItemViewType(int position) {
         return R.layout.item_with_image;

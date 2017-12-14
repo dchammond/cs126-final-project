@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button myProfileButton;
 
+    private ItemsAdapter itemsAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -216,10 +218,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayItems(List<Item> itemsToDisplay) {
-        final ItemsAdapter itemsAdapter = new ItemsAdapter(itemsToDisplay, this.currentTab);
-        final RecyclerView itemList = findViewById(R.id.itemsRecyclerView);
-        itemList.setAdapter(itemsAdapter);
-        itemList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        if (this.itemsAdapter == null) {
+            this.itemsAdapter = new ItemsAdapter(itemsToDisplay, this.currentTab);
+            final RecyclerView itemList = findViewById(R.id.itemsRecyclerView);
+            itemList.setAdapter(this.itemsAdapter);
+            itemList.setLayoutManager(
+                    new LinearLayoutManager(this,
+                            LinearLayoutManager.VERTICAL,
+                            false)
+            );
+        } else {
+            this.itemsAdapter.refreshItems(itemsToDisplay);
+        }
     }
 
     public int getCurrentTab() {
