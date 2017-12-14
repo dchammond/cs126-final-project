@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -115,7 +116,6 @@ public class EditableItem extends AppCompatActivity {
                     newItem.setItemId(EditableItem.this.currentItem.getItemId());
                     Item.updateItem(newItem, new WriteItem());
                 }
-                finish();
             }
         });
         this.editImageButton.setOnClickListener(new View.OnClickListener() {
@@ -145,13 +145,15 @@ public class EditableItem extends AppCompatActivity {
     /**
      * A WriteItem is an AsyncTask used to handle the result of creating or updating an Item
      */
-    private static class WriteItem extends AsyncTask<Boolean, Void, Void> {
+    private class WriteItem extends AsyncTask<Boolean, Void, Void> {
         @Override
         protected Void doInBackground(Boolean... booleans) {
-            boolean deleted = booleans[0];
-            if (!deleted) {
+            boolean written = booleans[0];
+            if (!written) {
                 Log.e(MainActivity.TAG, "Failed to write Item");
+                return null;
             }
+            EditableItem.this.finish();
             return null;
         }
 
