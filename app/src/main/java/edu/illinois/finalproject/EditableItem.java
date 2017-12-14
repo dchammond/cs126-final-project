@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -34,6 +35,7 @@ public class EditableItem extends AppCompatActivity {
 
     private ImageButton editImageButton;
 
+    private TextView itemSeller;
     private EditText editItemName;
     private EditText editItemDescription;
     private EditText editItemPrice;
@@ -80,13 +82,14 @@ public class EditableItem extends AppCompatActivity {
         this.editImageButton = findViewById(R.id.editImageButton);
         setUpButtons();
 
+        this.itemSeller = findViewById(R.id.itemSeller);
         this.editItemName = findViewById(R.id.editItemName);
         this.editItemDescription = findViewById(R.id.editItemDescription);
         this.editItemPrice = findViewById(R.id.editItemPrice);
         this.editItemContactInfo = findViewById(R.id.editItemContactInfo);
+        setUpElements();
 
         if (this.currentItem != null) {
-            setUpElements();
             this.imageUri = currentItem.getImageUri();
             Picasso.with(this).load(currentItem.getImageUri()).into(this.editImageButton);
         }
@@ -175,10 +178,13 @@ public class EditableItem extends AppCompatActivity {
     }
 
     private void setUpElements() {
-        this.editItemName.setText(this.currentItem.getItemName());
-        this.editItemDescription.setText(this.currentItem.getItemDescription());
-        this.editItemPrice.setText("$" + this.currentItem.getItemPrice().toString());
-        this.editItemContactInfo.setText(this.currentItem.getContactInfo().getContactInfo());
+        this.itemSeller.setText(this.currentUser.getDisplayName());
+        if (this.currentItem != null) {
+            this.editItemName.setText(this.currentItem.getItemName());
+            this.editItemDescription.setText(this.currentItem.getItemDescription());
+            this.editItemPrice.setText("$" + this.currentItem.getItemPrice().toString());
+            this.editItemContactInfo.setText(this.currentItem.getContactInfo().getContactInfo());
+        }
     }
 
     private Item extractItem() {
