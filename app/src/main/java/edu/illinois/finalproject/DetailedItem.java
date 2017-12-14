@@ -36,11 +36,11 @@ public class DetailedItem extends AppCompatActivity {
 
         Picasso.with(this).load(currentItem.getImageUri()).into(this.itemImage);
 
+        currentItem.getSellerPointer().getRealUser(new getRealUser(this.itemSeller));
         this.itemName.setText(currentItem.getItemName());
         this.itemDescription.setText(currentItem.getItemDescription());
         this.itemPrice.setText("$" + currentItem.getItemPrice().toString());
         this.itemContactInfo.setText(currentItem.getContactInfo().getFormattedContactInfo());
-        currentItem.getSellerPointer().getRealUser(new getRealUser(this.itemSeller));
     }
 
     private static class getRealUser extends AsyncTask<User, Void, Void> {

@@ -2,6 +2,7 @@ package edu.illinois.finalproject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,9 +50,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Item itemToDisplay = this.allItemsToDisplay.get(position);
+        itemToDisplay.getSellerPointer().getRealUser(new getRealUser(holder.itemSeller));
         holder.itemName.setText(itemToDisplay.getItemName());
         holder.itemPrice.setText("$" + itemToDisplay.getItemPrice().toString());
-        holder.itemSeller.setText(itemToDisplay.getSellerPointer().getRealUser().getDisplayName());
         final Context context = holder.itemView.getContext();
         Picasso.with(context).load(itemToDisplay.getImageUri()).into(holder.itemImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +75,28 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
                 }
             }
         });
+    }
+
+    private static class getRealUser extends AsyncTask<User, Void, Void> {
+        private TextView itemSeller;
+
+        public getRealUser(TextView itemSeller) {
+            super();
+            this.itemSeller = itemSeller;
+        }
+
+        @Override
+        protected Void doInBackground(User... users) {
+            if (users.length > 0) {
+                this.itemSeller.setText(users[0].getDisplayName());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onCancelled(Void aVoid) {
+            Log.e(MainActivity.TAG, "Could not load a User for a ItemsAdapter");
+        }
     }
 
     @Override
