@@ -38,7 +38,6 @@ public class Item implements Parcelable {
     }
 
     public Item(String itemName,
-                String itemId,
                 String itemDescription,
                 Double itemPrice,
                 UserPointer sellerPointer,
@@ -46,7 +45,6 @@ public class Item implements Parcelable {
                 ContactInfo contactInfo,
                 String imageUri) {
         this.itemName = itemName;
-        this.itemId = itemId;
         this.itemDescription = itemDescription;
         this.itemPrice = itemPrice;
         this.sellerPointer = sellerPointer;
@@ -159,12 +157,27 @@ public class Item implements Parcelable {
         });
     }
 
-    public static void createItem(final Item newItem,
+    public static void createItem(Item newItem,
                                   final AsyncTask<Boolean, Void, Void> callback) {
-        ITEMS.push().setValue(newItem).addOnCompleteListener(new OnCompleteListener<Void>() {
+        DatabaseReference dbRef = ITEMS.push();
+        newItem.setItemId(dbRef.getKey());
+        dbRef.setValue(newItem).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 callback.execute(task.isSuccessful());
+            }
+        });
+    }
+
+    public static void removeItem(final String itemId,
+                                  final AsyncTask<Boolean, Void, Void> callback) {
+        ITEMS.child(itemId).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    Log.e(MainActivity.TAG, databaseError.toString());
+                }
+                callback.execute(databaseError == null);
             }
         });
     }
