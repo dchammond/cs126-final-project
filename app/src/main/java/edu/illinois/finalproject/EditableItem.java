@@ -102,7 +102,7 @@ public class EditableItem extends AppCompatActivity {
                         new UserPointer(EditableItem.this.currentUser.getUserId()),
                         new Date().toString(),
                         new ContactInfo(EditableItem.this.editItemContactInfo.getText().toString()),
-                        extractImageUri()
+                        EditableItem.this.imageUri
                 );
                 if (EditableItem.this.currentItem == null) {
                     Item.createItem(newItem, EditableItem.this.currentUser, new writeItem());
@@ -184,10 +184,5 @@ public class EditableItem extends AppCompatActivity {
     private User extractUser() {
         final Intent intent = getIntent();
         return intent.getParcelableExtra(USER_KEY);
-    }
-
-    private String extractImageUri() {
-        final Intent intent = getIntent();
-        return intent.getParcelableExtra(IMAGE_URI);
     }
 }
