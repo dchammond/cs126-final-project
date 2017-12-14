@@ -203,6 +203,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final Context context = view.getContext();
                 Intent profileIntent = new Intent(context, ProfilePage.class);
+                profileIntent.putExtra(ProfilePage.APP_USER_KEY, MainActivity.this.currentUser);
+                profileIntent.putExtra(ProfilePage.APP_USER_EMAIL, MainActivity.this.firebaseUser.getEmail());
                 context.startActivity(profileIntent);
             }
         });
