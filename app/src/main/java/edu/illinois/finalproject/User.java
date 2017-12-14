@@ -88,7 +88,7 @@ public class User implements Parcelable {
                     User user = userObject.getValue(User.class);
                     if (user != null && user.getUserId().equals(userId)) {
                         callback.execute(user);
-                        break;
+                        return;
                     }
                 }
                 callback.execute();
