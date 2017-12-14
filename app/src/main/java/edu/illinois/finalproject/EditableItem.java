@@ -24,8 +24,12 @@ public class EditableItem extends AppCompatActivity {
     public static String USER_KEY = "user_key";
     public static String IMAGE_URI = "image_uri";
 
+    private static final int RESULT_URI = 1;
+
     private Item currentItem;
     private User currentUser;
+
+    private String imageUri;
 
     private ImageButton editImageButton;
 
@@ -36,6 +40,24 @@ public class EditableItem extends AppCompatActivity {
 
     private Button submitItemButton;
     private Button deleteItemButton;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch(requestCode) {
+                case RESULT_URI:
+                    if (data.getData() != null) {
+                        this.imageUri = data.getData().toString();
+                    }
+                    break;
+                default:
+                    Log.e(MainActivity.TAG,"Got requestCode:" + requestCode);
+                    break;
+            }
+        } else {
+            Log.e(MainActivity.TAG, "resultCode was NOT RESULT_OKAY, it was: " + resultCode);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
